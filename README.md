@@ -13,6 +13,19 @@ One photo turned into a 12-second reel: [ram_couple_effects.mp4](ram_couple_effe
 
 <img src="original_photo.jpg" width="280">
 
+## Vox-style pack (22 more effects)
+
+The [vox/](vox/) folder adds **22 Vox-style explainer effects**: paper cut-out look, newspaper clippings with a yellow
+highlighter, maps with pins, paper bar/line charts, big numbers, icon arrays, A-vs-B splits, timelines, quote cards,
+document reveals, redactions, hand-drawn arrows, source tags, archive film and block-wipe transitions.
+
+![Vox effects](vox/vox_preview.jpg)
+
+- **In Claude:** "Vox style intro with the headline 'Why rent is so high'", "map-pin on Pokhara at 8 seconds".
+- **On GitHub:** use them in your plan like any other effect (start from [vox/example_plan.json](vox/example_plan.json)). The Render effects action picks up `vox/vox.py` automatically.
+- **Install:** `bash vox/install.sh` (Windows: `vox\install.ps1`), or upload [vox/ram-vox-effects.zip](vox/ram-vox-effects.zip) in the Claude app.
+- All options: [vox/EFFECTS.md](vox/EFFECTS.md) · details: [vox/README.md](vox/README.md)
+
 ## 4 ways to use it
 
 | option | needs | best for |
