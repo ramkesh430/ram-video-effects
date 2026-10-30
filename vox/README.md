@@ -75,6 +75,17 @@ python vox/vox.py in.mp4 out.mp4 --plan plan.json                 # render
  {"fx": "vox-line", "start": 4, "end": 8, "title": "Rent in Kathmandu", "values": [8, 10, 13, 18, 25], "prefix": "Rs ", "suffix": "k"}]
 ```
 
+## Make a full voiced video from a script
+
+`make_video.py` turns a script into a finished explainer: AI voice-over (edge-tts, e.g. Nepali `ne-NP-SagarNeural`),
+a moving paper background, Vox effects timed to each line, and block-wipes between scenes.
+
+- **On GitHub:** Actions → **Make Vox video** → Run workflow → script `vox/scripts/digital_marketing_ne.json`.
+  The video lands in `outputs/digital_marketing_ne.mp4` (and as a download on the run page).
+- **Locally:** `pip install edge-tts` then `python vox/make_video.py vox/scripts/digital_marketing_ne.json`
+  (`--silent --preview` checks the layout without a voice).
+- Copy a script in [scripts/](scripts/) to make your own: each scene has `say` (voice text) and `fx` (effects, `at`/`end` in seconds from the scene start).
+
 ## Honest notes
 
 - Use real numbers, sources and quotes. The effects only draw what you give them.
