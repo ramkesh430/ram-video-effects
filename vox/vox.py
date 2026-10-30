@@ -25,8 +25,8 @@ from fx import (FX, register, clamp, lerp, ease_out_cubic, ease_in_out, ease_out
 PAPER, INK, YELLOW, RED, BLUE, GREY = "#EFE8D8", "#151515", "#FFE03A", "#E2372B", "#2F5D8A", "#9A958A"
 
 def U(c):
-    """size unit: frame width for vertical video, ~3/4 of the height for landscape"""
-    return min(c.W, c.H * 0.75)
+    """size unit: frame width for vertical video, the height for landscape"""
+    return min(c.W, c.H)
 
 # ================================================================= textures
 _tex = {}
@@ -260,16 +260,18 @@ class MarkerText(FX):
     params = {"text": "This is the [real reason]|nobody talks about", "y": 0.78, "size": 0.075}
     def front(self, c, canvas, lt):
         W, H = c.W, c.H; u = U(c); lines = as_list(self.p["text"]); sz = u * float(self.p["size"])
-        hq = ease_in_out((lt - 0.35) / 0.6); y = H * float(self.p["y"]) - len(lines) * sz * 0.8
+        hq = ease_in_out((lt - 0.35) / 0.6); strips = []
         for i, ln in enumerate(lines):
-            q = ease_out_cubic((lt - i * 0.12) / 0.35)
-            if q <= 0: continue
-            blk = marker_block([ln], "heavy", sz, INK, YELLOW, hq, u * 0.86)
+            blk = marker_block([ln], "heavy", sz, INK, YELLOW, hq, u * 0.86 if H >= W else W * 0.8)
             strip = paper_card(blk.width + sz * 0.5, blk.height + sz * 0.35, "#FAF7EF", 11 + i, "lr")
             paste(strip, blk, sz * 0.25, sz * 0.17)
-            strip = rot(shadowed(strip, int(u * 0.012), (0, 4), 90), (-1.5 if i % 2 else 1.2))
-            paste(canvas, strip, lerp(-strip.width, W / 2, q) if i % 2 == 0 else lerp(W + strip.width, W / 2, q), y + strip.height / 2,
-                  self.outa(lt), center=True)
+            strips.append(rot(shadowed(strip, int(u * 0.012), (0, 4), 90), (-1.5 if i % 2 else 1.2)))
+        y = H * float(self.p["y"]) - sum(st.height * 0.92 for st in strips) / 2      # the block is centred on y
+        for i, strip in enumerate(strips):
+            q = ease_out_cubic((lt - i * 0.12) / 0.35)
+            if q > 0:
+                paste(canvas, strip, lerp(-strip.width, W / 2, q) if i % 2 == 0 else lerp(W + strip.width, W / 2, q), y + strip.height / 2,
+                      self.outa(lt), center=True)
             y += strip.height * 0.92
 
 @register
@@ -670,7 +672,7 @@ class IconArray(FX):
     def front(self, c, canvas, lt):
         W, H = c.W, c.H; u = U(c); n = int(self.p["total"]); k = int(self.p["highlight"]); cols = int(self.p["cols"])
         rows = math.ceil(n / cols); w = u * 0.86; lab_h = u * 0.09
-        cell = min((w - u * 0.1) / cols, (H * 0.4 - u * 0.1 - lab_h) / rows)            # keep the card under ~40% of the frame
+        cell = min((w - u * 0.1) / cols, (H * (0.4 if H > W else 0.62) - u * 0.1 - lab_h) / rows)            # keep the card under ~40% of the frame
         lab = T(self.p["label"], "bold", fit_size(self.p["label"], "bold", w - u * 0.1, u * 0.04), INK)
         w = max(cols * cell, lab.width) + u * 0.1
         h = rows * cell + u * 0.1 + lab_h; cardi = paper_card(w, h, "#F7F3EA", 29, "tb"); d = ImageDraw.Draw(cardi)

@@ -19,7 +19,7 @@ Script JSON:
     {"say": "voice text", "fx": [{"fx": "big-number", "value": 100, "at": 0.2, "end": "end"}]}
   ]
 }
-Inside a scene, "at"/"end" are seconds from the scene start ("end": "end" = until the scene ends, negative = before the end).
+Inside a scene, "at"/"end" are seconds from the scene start ("end": "end" = until the scene ends; a negative "at" or "end" counts back from the scene end).
 Needs: edge-tts (pip install edge-tts) and internet for the voice; ffmpeg; everything vox.py needs.
 """
 import argparse, asyncio, json, math, os, subprocess, sys, tempfile
@@ -107,7 +107,7 @@ def main():
         starts.append((s0, s1))
         for f in sc.get("fx", []):                         # at/end are relative to the scene start
             f = dict(f); at = float(f.pop("at", 0)); en = f.pop("end", "end")
-            st = s0 + at
+            st = s0 + at if at >= 0 else s1 + at          # negative "at" = seconds before the scene ends
             e = s1 if en == "end" else (s1 + float(en) if float(en) < 0 else s0 + float(en))
             f["start"], f["end"] = round(st, 3), round(max(st + 0.2, e), 3)
             plan.append(f)
