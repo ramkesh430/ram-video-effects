@@ -76,11 +76,11 @@ jobs:
           if-no-files-found: ignore
 
       - name: Save result into outputs/
-        if: github.event_name == 'push' || github.event.inputs.commit == 'true'
+        if: github.event_name == 'push' || inputs.commit
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           ls outputs/*_effects.mp4 >/dev/null 2>&1 || { echo "no rendered files"; exit 0; }
-          git add outputs/*_effects.mp4
+          git add -f outputs/*_effects.mp4
           git commit -m "Rendered effects [skip ci]" || echo "nothing to commit"
           git pull --rebase -q && git push
