@@ -1,0 +1,43 @@
+{
+  "name": "digital_marketing_ne",
+  "voice": "ne-NP-SagarNeural",
+  "rate": "+5%",
+  "size": [1080, 1920],
+  "background": "paper",
+  "transitions": true,
+  "global": [{"fx": "paper-grain", "amount": 0.35}],
+  "scenes": [
+    {"say": "तपाईंको बिजनेस अनलाइन छैन भने, धेरै ग्राहकले तपाईंलाई भेट्टाउनै सक्दैनन्। आज बुझौँ, डिजिटल मार्केटिङ भनेको के हो।",
+     "fx": [{"fx": "torn-headline", "at": 0.1, "kicker": "EXPLAINED", "text": "What is digital marketing?", "y": 0.12},
+            {"fx": "marker-text", "at": 0.8, "text": "Is your business [online?]", "y": 0.55, "size": 0.09},
+            {"fx": "context-label", "at": 1.2, "text": "NEPAL, 2026", "sub": "Ep. 01", "y": 0.86}]},
+
+    {"say": "नेपालमा अहिले करिब एक करोड छैसट्ठी लाख मानिस इन्टरनेट चलाउँछन्। यो कुल जनसङ्ख्याको छपन्न प्रतिशत हो।",
+     "fx": [{"fx": "torn-headline", "at": 0.1, "kicker": "THE NUMBERS", "text": "Nepal is already online", "y": 0.12},
+            {"fx": "big-number", "at": 0.4, "value": 16600000, "label": "internet users in Nepal (56%)", "y": 0.5},
+            {"fx": "source-tag", "at": 0.6, "text": "Source: DataReportal, Digital 2026 (Oct 2025)", "y": 0.94}]},
+
+    {"say": "फेसबुक विज्ञापनबाट मात्रै करिब एक करोड अठचालीस लाख मानिससम्म पुग्न सकिन्छ। अर्थात् हरेक दुई जनामा एक जना।",
+     "fx": [{"fx": "torn-headline", "at": 0.1, "kicker": "FACEBOOK", "text": "14.8 million people reachable", "y": 0.12},
+            {"fx": "icon-array", "at": 0.3, "total": 100, "highlight": 50, "cols": 10, "label": "1 in 2 Nepalis can see a Facebook ad", "y": 0.56},
+            {"fx": "source-tag", "at": 0.6, "text": "Source: Meta ad reach via DataReportal (Oct 2025)", "y": 0.97}]},
+
+    {"say": "कुन प्लेटफर्ममा कति मानिस छन्, हेर्नुहोस्। फेसबुक सबैभन्दा ठूलो, त्यसपछि मेसेन्जर, इन्स्टाग्राम र लिङ्क्डइन।",
+     "fx": [{"fx": "torn-headline", "at": 0.1, "kicker": "WHERE THEY ARE", "text": "Pick the right platform", "y": 0.12},
+            {"fx": "vox-bars", "at": 0.3, "title": "Reach in Nepal (million people)", "labels": ["Facebook", "Messenger", "Instagram", "LinkedIn*"],
+             "values": [14.8, 11.0, 4.35, 2.3], "suffix": "M", "highlight": 0, "source": "DataReportal. *LinkedIn = members", "y": 0.52}]},
+
+    {"say": "डिजिटल मार्केटिङको सबैभन्दा ठूलो फाइदा टार्गेटिङ हो। पत्रिकाको विज्ञापन सबैले देख्छन्, तर डिजिटल विज्ञापन उमेर, ठाउँ र रुचि हेरेर सही मानिसले देख्छन्।",
+     "fx": [{"fx": "quote-card", "at": 0, "quote": "Old ads reach [everyone.] Digital ads reach [the right people.]", "by": "— the power of targeting"}]},
+
+    {"say": "सुरु गर्न चारवटा काम गर्नुहोस्। आफ्नो ग्राहक चिन्नुहोस्। काम लाग्ने कन्टेन्ट बनाउनुहोस्। सानो बजेटमा विज्ञापन चलाउनुहोस्। अनि नतिजा नापेर सुधार गर्दै जानुहोस्।",
+     "fx": [{"fx": "torn-headline", "at": 0.1, "kicker": "HOW TO START", "text": "4 simple steps", "y": 0.12},
+            {"fx": "checklist", "at": 0.4, "title": "Your first month online", "style": "light",
+             "items": ["Know your customer", "Make useful content", "Run small test ads", "Measure and improve"],
+             "notes": ["who and where", "reels, posts, tips", "small budget", "reach, clicks, sales"]}]},
+
+    {"say": "याद राख्नुहोस्: सही ठाउँ, सही मानिस, सही सन्देश। यस्तै भिडियोका लागि फलो गर्नुहोस्।",
+     "fx": [{"fx": "marker-text", "at": 0.2, "text": "Right place.|Right people.|[Right message.]", "y": 0.5, "size": 0.1},
+            {"fx": "sticker", "at": 2.5, "text": "FOLLOW", "x": 0.5, "y": 0.86, "angle": -6}]}
+  ]
+}
