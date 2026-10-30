@@ -11,6 +11,8 @@ Results go to outputs/NAME_effects.mp4
 import argparse, glob, os, subprocess, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+# vox/vox.py = fx.py + 17 Vox effects, so every plan works with it
+ENGINE = os.path.join(HERE, "vox", "vox.py") if os.path.exists(os.path.join(HERE, "vox", "vox.py")) else os.path.join(HERE, "fx.py")
 MEDIA = (".mp4", ".mov", ".m4v", ".webm", ".mkv", ".jpg", ".jpeg", ".png", ".webp")
 
 def pick_plan(path, explicit):
@@ -35,7 +37,7 @@ def main():
         plan = pick_plan(f, a.plan)
         out = os.path.join(a.out, os.path.splitext(os.path.basename(f))[0] + "_effects.mp4")
         print(f"==> {f}  (plan: {os.path.relpath(plan, HERE)})  ->  {os.path.relpath(out, HERE)}", flush=True)
-        r = subprocess.run([sys.executable, os.path.join(HERE, "fx.py"), f, out, "--plan", plan, "--max-short", str(a.max_short)])
+        r = subprocess.run([sys.executable, ENGINE, f, out, "--plan", plan, "--max-short", str(a.max_short)])
         ok += r.returncode == 0
         clip = os.path.join(os.path.dirname(out), os.path.splitext(os.path.basename(f))[0] + "_clip.mp4")
         if os.path.exists(clip): os.remove(clip)
