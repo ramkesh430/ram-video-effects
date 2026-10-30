@@ -1,0 +1,476 @@
+[
+{
+"fx": "paper-grain",
+"amount": 0.2,
+"start": 0,
+"end": 267.356
+},
+{
+"fx": "torn-headline",
+"kicker": "A VOX-STYLE DOCUMENTARY",
+"text": "The story of digital marketing in Nepal",
+"y": 0.3,
+"start": 0.2,
+"end": 17.39
+},
+{
+"fx": "marker-text",
+"text": "1994 → [2026]",
+"y": 0.66,
+"size": 0.12,
+"start": 4.0,
+"end": 17.39
+},
+{
+"fx": "context-label",
+"text": "NEPAL, 1994-2026",
+"y": 0.86,
+"start": 1.0,
+"end": 17.39
+},
+{
+"fx": "quote-card",
+"quote": "Before the internet, ads reached [everyone] and measured [no one.]",
+"by": "— marketing in the 1990s",
+"start": 17.39,
+"end": 32.528
+},
+{
+"fx": "torn-headline",
+"kicker": "CHAPTER 1",
+"text": "The first connection",
+"y": 0.13,
+"start": 32.728,
+"end": 49.802
+},
+{
+"fx": "vox-timeline",
+"years": [
+"1994",
+"1995",
+"2005",
+"2011",
+"2017"
+],
+"events": [
+"Mercantile brings email + internet",
+"WorldLink starts",
+"Mobile internet (GPRS)",
+"3G arrives",
+"4G arrives"
+],
+"active": 0,
+"y": 0.62,
+"start": 33.128,
+"end": 41.528
+},
+{
+"fx": "vox-timeline",
+"years": [
+"1994",
+"1995",
+"2005",
+"2011",
+"2017"
+],
+"events": [
+"Mercantile brings email + internet",
+"WorldLink starts",
+"Mobile internet (GPRS)",
+"3G arrives",
+"4G arrives"
+],
+"active": 1,
+"y": 0.62,
+"start": 41.528,
+"end": 49.802
+},
+{
+"fx": "context-label",
+"text": "KATHMANDU, 1994",
+"y": 0.88,
+"start": 33.528,
+"end": 49.802
+},
+{
+"fx": "vox-timeline",
+"years": [
+"1994",
+"1995",
+"2005",
+"2011",
+"2017"
+],
+"events": [
+"Mercantile brings email + internet",
+"WorldLink starts",
+"Mobile internet (GPRS)",
+"3G arrives",
+"4G arrives"
+],
+"y": 0.62,
+"start": 49.802,
+"end": 59.856
+},
+{
+"fx": "marker-text",
+"text": "The internet moved|into [our pockets.]",
+"y": 0.55,
+"size": 0.1,
+"start": 59.956,
+"end": 63.356
+},
+{
+"fx": "source-tag",
+"text": "Source: NepaliTelecom, Wikipedia",
+"y": 0.96,
+"start": 50.302,
+"end": 63.356
+},
+{
+"fx": "torn-headline",
+"kicker": "CHAPTER 2",
+"text": "Nepal goes online",
+"y": 0.13,
+"start": 63.556,
+"end": 81.782
+},
+{
+"fx": "vox-line",
+"title": "Internet users in Nepal (million)",
+"values": [
+10.21,
+11.51,
+15.4,
+16.6
+],
+"labels": [
+"Jan 2020",
+"Oct 2025"
+],
+"prefix": "",
+"suffix": "M",
+"y": 0.6,
+"color": "#E2372B",
+"start": 63.956,
+"end": 81.782
+},
+{
+"fx": "source-tag",
+"text": "Source: DataReportal, Digital 2020/2022/2024/2026",
+"y": 0.96,
+"start": 63.956,
+"end": 81.782
+},
+{
+"fx": "torn-headline",
+"kicker": "CHAPTER 3",
+"text": "Facebook becomes the marketplace",
+"y": 0.13,
+"start": 81.982,
+"end": 98.72
+},
+{
+"fx": "vox-bars",
+"title": "Ad reach in Nepal (million people)",
+"labels": [
+"Facebook",
+"Messenger",
+"Instagram"
+],
+"values": [
+14.8,
+11.0,
+4.35
+],
+"suffix": "M",
+"highlight": 0,
+"source": "DataReportal, Oct 2025",
+"y": 0.6,
+"start": 82.382,
+"end": 98.72
+},
+{
+"fx": "torn-headline",
+"kicker": "THE BIG SHIFT",
+"text": "Targeting and measurement",
+"y": 0.13,
+"start": 98.92,
+"end": 115.178
+},
+{
+"fx": "marker-text",
+"text": "Who: [age 20-30, Pokhara]|Interest: [fitness]|Result: [measured]",
+"y": 0.64,
+"size": 0.08,
+"start": 99.52,
+"end": 115.178
+},
+{
+"fx": "photo-drop",
+"captions": [
+"CLOTHES",
+"CAKES",
+"PHONES"
+],
+"sepia": false,
+"start": 115.378,
+"end": 129.092
+},
+{
+"fx": "marker-text",
+"text": "Open a page before|[opening a shop.]",
+"y": 0.7,
+"size": 0.09,
+"start": 118.678,
+"end": 129.092
+},
+{
+"fx": "torn-headline",
+"kicker": "CHAPTER 4",
+"text": "Money goes digital",
+"y": 0.13,
+"start": 129.292,
+"end": 150.062
+},
+{
+"fx": "vox-timeline",
+"years": [
+"2009",
+"2017",
+"2020"
+],
+"events": [
+"eSewa launches (beta)",
+"Khalti rises",
+"Lockdown pushes digital payments"
+],
+"y": 0.62,
+"start": 129.692,
+"end": 150.062
+},
+{
+"fx": "source-tag",
+"text": "Sources: Onlinekhabar (2022), Nepali Times (2021)",
+"y": 0.96,
+"start": 129.692,
+"end": 150.062
+},
+{
+"fx": "big-number",
+"value": 4000000,
+"label": "digital wallet users, estimate (2021)",
+"y": 0.5,
+"start": 150.262,
+"end": 156.262
+},
+{
+"fx": "big-number",
+"value": 6000000,
+"label": "eSewa account holders, about (2022)",
+"y": 0.5,
+"start": 156.462,
+"end": 162.464
+},
+{
+"fx": "source-tag",
+"text": "Sources: Nepali Times (2021), Onlinekhabar (2022)",
+"y": 0.96,
+"start": 150.462,
+"end": 162.464
+},
+{
+"fx": "photo-drop",
+"captions": [
+"YOUTUBE",
+"TIKTOK",
+"INSTAGRAM"
+],
+"sepia": false,
+"start": 162.664,
+"end": 179.858
+},
+{
+"fx": "marker-text",
+"text": "The new billboard:|[a trusted face.]",
+"y": 0.7,
+"size": 0.09,
+"start": 166.464,
+"end": 179.858
+},
+{
+"fx": "redact",
+"title": "TIKTOK, NOVEMBER 13, 2023",
+"lines": [
+1,
+2,
+4,
+5,
+7,
+8,
+10
+],
+"stamp": "BLOCKED",
+"start": 179.858,
+"end": 197.948
+},
+{
+"fx": "context-label",
+"text": "NOV 2023 - AUG 2024",
+"sub": "Chapter 5: when platforms go dark",
+"y": 0.86,
+"start": 181.358,
+"end": 197.948
+},
+{
+"fx": "highlight-clip",
+"source": "What happened",
+"date": "September 2025",
+"headline": "26 unregistered platforms blocked",
+"body": "The block, [including Facebook, YouTube and Instagram,] led to youth protests. At least 19 people were killed, and the ban was withdrawn.",
+"y": 0.55,
+"angle": -2,
+"start": 198.148,
+"end": 217.43
+},
+{
+"fx": "source-tag",
+"text": "Sources: Al Jazeera, Scroll.in (Sept 2025)",
+"y": 0.96,
+"start": 198.548,
+"end": 217.43
+},
+{
+"fx": "torn-headline",
+"kicker": "THE LESSON",
+"text": "Don't build on one platform only",
+"y": 0.13,
+"start": 217.63,
+"end": 232.52
+},
+{
+"fx": "marker-text",
+"text": "1. Your own [website]|2. A customer [phone / email list]|3. More than [one platform]|4. [Back up] your content",
+"y": 0.66,
+"size": 0.06,
+"start": 218.23,
+"end": 232.52
+},
+{
+"fx": "torn-headline",
+"kicker": "CHAPTER 6",
+"text": "What comes next",
+"y": 0.13,
+"start": 232.72,
+"end": 252.026
+},
+{
+"fx": "icon-array",
+"total": 100,
+"highlight": 56,
+"cols": 10,
+"label": "56 in 100 Nepalis are online. 44 are not, yet.",
+"y": 0.6,
+"start": 233.12,
+"end": 252.026
+},
+{
+"fx": "source-tag",
+"text": "Source: DataReportal, Digital 2026 (Oct 2025)",
+"y": 0.96,
+"start": 233.12,
+"end": 252.026
+},
+{
+"fx": "marker-text",
+"text": "From the first email|to [your next reel.]",
+"y": 0.45,
+"size": 0.11,
+"start": 252.226,
+"end": 266.756
+},
+{
+"fx": "sticker",
+"text": "FOLLOW",
+"x": 0.84,
+"y": 0.86,
+"angle": -6,
+"start": 263.256,
+"end": 266.756
+},
+{
+"fx": "block-wipe",
+"start": 17.09,
+"end": 17.69
+},
+{
+"fx": "block-wipe",
+"start": 32.228,
+"end": 32.828
+},
+{
+"fx": "block-wipe",
+"start": 49.502,
+"end": 50.102
+},
+{
+"fx": "block-wipe",
+"start": 63.056,
+"end": 63.656
+},
+{
+"fx": "block-wipe",
+"start": 81.482,
+"end": 82.082
+},
+{
+"fx": "block-wipe",
+"start": 98.42,
+"end": 99.02
+},
+{
+"fx": "block-wipe",
+"start": 114.878,
+"end": 115.478
+},
+{
+"fx": "block-wipe",
+"start": 128.792,
+"end": 129.392
+},
+{
+"fx": "block-wipe",
+"start": 149.762,
+"end": 150.362
+},
+{
+"fx": "block-wipe",
+"start": 162.164,
+"end": 162.764
+},
+{
+"fx": "block-wipe",
+"start": 179.558,
+"end": 180.158
+},
+{
+"fx": "block-wipe",
+"start": 197.648,
+"end": 198.248
+},
+{
+"fx": "block-wipe",
+"start": 217.13,
+"end": 217.73
+},
+{
+"fx": "block-wipe",
+"start": 232.22,
+"end": 232.82
+},
+{
+"fx": "block-wipe",
+"start": 251.726,
+"end": 252.326
+}
+]
