@@ -5,7 +5,7 @@
   "size": [1080, 1920],
   "background": "paper",
   "transitions": true,
-  "global": [{"fx": "paper-grain", "amount": 0.35}],
+  "global": [{"fx": "paper-grain", "amount": 0.2}],
   "scenes": [
     {"say": "तपाईंको बिजनेस अनलाइन छैन भने, धेरै ग्राहकले तपाईंलाई भेट्टाउनै सक्दैनन्। आज बुझौँ, डिजिटल मार्केटिङ भनेको के हो।",
      "fx": [{"fx": "torn-headline", "at": 0.1, "kicker": "EXPLAINED", "text": "What is digital marketing?", "y": 0.12},
