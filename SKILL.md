@@ -94,4 +94,9 @@ Charts, counters and headlines should use the user's real numbers and words - as
 5. **Render:** `python ~/.cache/fxkit/fx.py VIDEO.mp4 VIDEO_effects.mp4 --plan plan.json` (`--max-short 2160` for 4K). Original audio is kept.
 6. Tell the user what was added and when; offer tweaks ("too fast", "covers my face" -> adjust and re-render).
 
+## More: Vox-style explainers and voiced videos
+For "Vox style", explainer/documentary looks, or a finished video with an AI voice-over from a prompt, use the pack in
+`vox/` of github.com/ramkesh430/ram-video-effects (skill `ram-vox-effects`): 22 Vox effects + `make_video.py`
+(script -> voice + paper background + effects, 9:16 or 16:9). All 62 effects here also work inside Vox plans.
+
 Notes: draft quality, the user approves before posting. No music or sound effects are added.
