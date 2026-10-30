@@ -1681,6 +1681,37 @@ def probe(path):
             if float(d or 0) > 0 and float(n) > 0: fps = float(n) / float(d)
     return fps
 
+IMAGE_EXT = (".jpg", ".jpeg", ".png", ".webp", ".bmp", ".heic")
+
+def photo_to_clip(path, seconds=8.0, fps=30, out=None, max_short=1080):
+    """turn a still photo into a vertical 9:16 slow-zoom clip with silent audio."""
+    im = cv2.imread(path)
+    if im is None:
+        im = cv2.cvtColor(np.array(Image.open(path).convert("RGB")), cv2.COLOR_RGB2BGR)
+    H, W = im.shape[:2]
+    if W / H > 9 / 16:                      # too wide -> crop around the people (centre of the person mask if possible)
+        cw = int(H * 9 / 16); cx = W // 2
+        try:
+            tr = Tracker(find_model(None, "selfie"), None, W, H); m = tr.segment(cv2.cvtColor(im, cv2.COLOR_BGR2RGB)); tr.close()
+            xs = np.where(m.max(axis=0) > 0.5)[0]
+            if len(xs): cx = int((xs[0] + xs[-1]) / 2)
+        except Exception:
+            pass
+        x0 = int(clamp(cx - cw // 2, 0, W - cw)); im = im[:, x0:x0 + cw]
+    else:                                   # too tall -> crop height, keep the top (heads)
+        ch = int(W * 16 / 9); im = im[:min(H, ch)]
+    ow = max_short // 2 * 2; oh = int(ow * 16 / 9) // 2 * 2
+    out = out or os.path.splitext(path)[0] + "_clip.mp4"; tmp = out + ".raw.mp4"
+    vw = cv2.VideoWriter(tmp, cv2.VideoWriter_fourcc(*"mp4v"), fps, (ow, oh)); n = int(seconds * fps); h, w = im.shape[:2]
+    for i in range(n):
+        z = 1 + 0.06 * i / n; ch_, cw_ = int(h / z), int(w / z); y = int((h - ch_) * 0.35); x = (w - cw_) // 2
+        vw.write(cv2.resize(im[y:y + ch_, x:x + cw_], (ow, oh), interpolation=cv2.INTER_AREA))
+    vw.release()
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", tmp, "-f", "lavfi", "-i", "anullsrc=r=44100:cl=stereo",
+                    "-shortest", "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", out], check=True)
+    os.remove(tmp)
+    return out
+
 def find_model(arg, key):
     if arg: return arg
     for p in sorted(glob.glob(os.path.join(CACHE, "*.tflite"))):
@@ -1755,6 +1786,7 @@ def main():
     ap.add_argument("--debug", action="store_true"); ap.add_argument("--list", action="store_true")
     ap.add_argument("--max-short", type=int, default=1080, help="short side px (2160 for 4K)")
     ap.add_argument("--crf", type=int, default=18)
+    ap.add_argument("--photo-seconds", type=float, default=8, help="clip length when the input is a photo (min: last effect end)")
     args = ap.parse_args()
     if args.list:
         for k, c in REG.items():
@@ -1762,6 +1794,13 @@ def main():
             print(f"{k}{al}: {c.help}\n    params: {json.dumps(c.params)}")
         return
     fxs = load_plan(args)
+    if not args.input: sys.exit("Give an input video or photo. Run --list to see effects.")
+    if args.input.lower().endswith(IMAGE_EXT):
+        clip = os.path.join(os.path.dirname(os.path.abspath(args.output or args.input)),
+                            os.path.splitext(os.path.basename(args.input))[0] + "_clip.mp4")
+        need = max([f.end for f in fxs] + [float(args.photo_seconds)])
+        print(f"Photo input -> {need:.1f}s slow-zoom clip", file=sys.stderr)
+        args.input = photo_to_clip(args.input, need, out=clip, max_short=args.max_short)
     cap = cv2.VideoCapture(args.input)
     ok, fr = cap.read()
     if not ok: sys.exit("Cannot read video")

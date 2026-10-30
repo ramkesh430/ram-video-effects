@@ -13,6 +13,38 @@ One photo turned into a 12-second reel: [ram_couple_effects.mp4](ram_couple_effe
 
 <img src="original_photo.jpg" width="280">
 
+## 4 ways to use it
+
+| option | needs | best for |
+|---|---|---|
+| **1. Claude skill** (below) | Claude Code or the Claude app | asking in plain words: "orbit from 3 to 6 seconds" |
+| **2. Right here on GitHub** | only a GitHub account | no install at all — upload, wait, download |
+| **3. Google Colab** [![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/ramkesh430/ram-video-effects/blob/main/ram_video_effects.ipynb) | a Google account | phone or any computer, free |
+| **4. With the original skill too** | Claude Code | having both this pack and [Vibha's claude-video-effects](https://github.com/Vibha-Ramprakash/claude-video-effects) |
+
+### Option 2 — render on GitHub (no install)
+
+1. Fork this repo (or use your own copy).
+2. Open the **inputs/** folder → **Add file → Upload files** → add your video or photo.
+   Optional: add `NAME.json` (same name as the video) or `plan.json` with your effects. Without one, [example_plan.json](example_plan.json) is used.
+3. Commit. The **Render effects** action starts by itself (Actions tab, ~3–6 min).
+4. Your video appears in **outputs/NAME_effects.mp4** (and as a download on the run page).
+
+Or: **Actions → Render effects → Run workflow**, type a file path (e.g. `original_photo.jpg`) and a plan.
+
+### Option 3 — Google Colab
+
+Click the badge above, press ▶ on each cell: setup → upload → edit the effects list → preview → render & download.
+
+### Option 4 — also install the original skill
+
+```bash
+bash ram-video-effects/install.sh --with-original                                   # Mac / Linux
+powershell -ExecutionPolicy Bypass -File ram-video-effects\install.ps1 -WithOriginal   # Windows
+```
+
+This adds Vibha Ramprakash's original skill at `~/.claude/skills/effects` next to this one. Say `/effects …` for the original, or "use ram-video-effects …" for this pack.
+
 ## Install (one line)
 
 **Mac / Linux** — open Terminal:
@@ -82,6 +114,10 @@ noise · lineup · locked-on · orbit · lean-in · backdrop-word · spotlight �
 | `EFFECTS.md` | every effect and its options |
 | `example_plan.json` | the plan behind the example video |
 | `ram-video-effects.zip` | skill for upload in the Claude app |
+| `render_inputs.py` | renders everything in `inputs/` (used by the GitHub Action) |
+| `.github/workflows/render.yml` | the "Render effects" GitHub Action |
+| `ram_video_effects.ipynb` | Google Colab notebook |
+| `inputs/` · `outputs/` | drop videos here · rendered results appear here |
 
 ## Honest notes
 

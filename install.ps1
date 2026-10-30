@@ -1,5 +1,7 @@
 # Ram's Video Effects - installer for Windows (PowerShell)
-#   powershell -ExecutionPolicy Bypass -File install.ps1
+#   powershell -ExecutionPolicy Bypass -File install.ps1                  # Ram's 62 effects
+#   powershell -ExecutionPolicy Bypass -File install.ps1 -WithOriginal    # + Vibha Ramprakash's original skill
+param([switch]$WithOriginal)
 $ErrorActionPreference = "Continue"
 $Here  = Split-Path -Parent $MyInvocation.MyCommand.Path
 $Cache = Join-Path $HOME ".cache\fxkit"
@@ -37,6 +39,12 @@ foreach ($f in @("ofl/anton/Anton-Regular.ttf","ofl/archivoblack/ArchivoBlack-Re
 Write-Host "==> Engine + Claude skill"
 Copy-Item (Join-Path $Here "fx.py") (Join-Path $Cache "fx.py") -Force
 Copy-Item (Join-Path $Here "fx.py"), (Join-Path $Here "SKILL.md") $Skill -Force
+
+if ($WithOriginal) {
+  Write-Host "==> Original skill (github.com/Vibha-Ramprakash/claude-video-effects)"
+  $Orig = Join-Path $HOME ".claude\skills\effects"
+  if (Test-Path (Join-Path $Orig ".git")) { git -C $Orig pull -q } else { git clone -q https://github.com/Vibha-Ramprakash/claude-video-effects $Orig }
+}
 
 python (Join-Path $Cache "fx.py") --list | Select-Object -First 1 | Out-Null
 Write-Host "Done. Restart Claude Code, drop in a video and ask for an effect."

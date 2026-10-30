@@ -9,7 +9,7 @@ The user gives a video (vertical talking-head works best) and asks for effects i
 "orbit from 3 to 6 seconds", "spotlight when I say 'lights off'", "backdrop-word RAM for the first 2s".
 Reply in the user's language (often Nepali in Roman script).
 
-The engine is `fx.py` in this skill's folder. Run `python fx.py --list` to see every effect with its params.
+The engine is `fx.py` in this skill's folder. It accepts a video OR a photo (a photo becomes a slow-zoom vertical clip automatically). Run `python fx.py --list` to see every effect with its params.
 
 ## Effects
 - noise: Reels/screenshots pile up behind your head

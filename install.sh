@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # Ram's Video Effects - one-line installer (macOS / Linux)
-#   bash install.sh
+#   bash install.sh                  # Ram's 62 effects
+#   bash install.sh --with-original  # + Vibha Ramprakash's original claude-video-effects skill
 set -u
+WITH_ORIGINAL=0
+for a in "$@"; do [ "$a" = "--with-original" ] && WITH_ORIGINAL=1; done
 HERE="$(cd "$(dirname "$0")" && pwd)"
 CACHE="$HOME/.cache/fxkit"
 SKILL="$HOME/.claude/skills/ram-video-effects"
@@ -53,6 +56,13 @@ find "$CACHE/fonts" -size -1k -delete 2>/dev/null
 echo "==> Engine + Claude skill"
 cp "$HERE/fx.py" "$CACHE/fx.py"
 cp "$HERE/fx.py" "$HERE/SKILL.md" "$SKILL/"
+
+if [ "$WITH_ORIGINAL" = 1 ]; then
+  echo "==> Original skill (github.com/Vibha-Ramprakash/claude-video-effects)"
+  ORIG="$HOME/.claude/skills/effects"
+  if [ -d "$ORIG/.git" ]; then git -C "$ORIG" pull -q; else git clone -q https://github.com/Vibha-Ramprakash/claude-video-effects "$ORIG"; fi \
+    && echo "   installed to $ORIG (use it with /effects)" || echo "   could not clone the original skill"
+fi
 
 echo "==> Self-test"
 echo "   OK: $($PY "$CACHE/fx.py" --list | grep -vc params) effects ready"
