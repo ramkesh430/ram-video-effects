@@ -82,6 +82,8 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("script"); ap.add_argument("--out"); ap.add_argument("--silent", action="store_true")
     ap.add_argument("--preview", action="store_true"); ap.add_argument("--max-short", default="1080")
+    ap.add_argument("--crf", default="26", help="quality (lower = bigger file)")
+    ap.add_argument("--max-mb", type=float, default=90, help="re-encode if the video is bigger (GitHub limit is 100 MB)")
     a = ap.parse_args()
     S = json.load(open(a.script, encoding="utf-8"))
     name = S.get("name") or os.path.splitext(os.path.basename(a.script))[0]
@@ -141,8 +143,16 @@ def main():
         mids = ",".join(f"{(s0 + s1) / 2:.2f}" for s0, s1 in starts)
         sh(*eng, os.path.splitext(out)[0] + ".png", "--plan", plan_path, "--preview", mids)
     else:
-        sh(*eng, out, "--plan", plan_path, "--max-short", str(a.max_short))
-        print(f"Video: {out}  ({total:.1f}s)")
+        sh(*eng, out, "--plan", plan_path, "--max-short", str(a.max_short), "--crf", str(a.crf))
+        mb = os.path.getsize(out) / 1e6
+        if mb > a.max_mb:                                   # keep it pushable to GitHub
+            kbps = int(a.max_mb * 8000 * 0.92 / total) - 160
+            small = out + ".small.mp4"
+            sh("ffmpeg", "-y", "-loglevel", "error", "-i", out, "-c:v", "libx264", "-preset", "medium", "-b:v", f"{kbps}k",
+               "-maxrate", f"{int(kbps * 1.3)}k", "-bufsize", f"{kbps * 2}k", "-pix_fmt", "yuv420p", "-c:a", "aac", "-b:a", "160k",
+               "-movflags", "+faststart", small)
+            os.replace(small, out); print(f"   re-encoded {mb:.0f} MB -> {os.path.getsize(out) / 1e6:.0f} MB")
+        print(f"Video: {out}  ({total:.1f}s, {os.path.getsize(out) / 1e6:.0f} MB)")
 
 if __name__ == "__main__":
     main()
