@@ -9,6 +9,11 @@ on:
         description: "Script JSON (see vox/scripts/)"
         required: true
         default: "vox/scripts/digital_marketing_ne.json"
+      format:
+        description: "Format"
+        type: choice
+        options: ["as in the script", "both (9:16 + 16:9)", "reel 9:16", "youtube 16:9"]
+        default: "as in the script"
       commit:
         description: "Save the video into outputs/ in the repo (otherwise only as a download)"
         type: boolean
@@ -51,9 +56,17 @@ jobs:
       - name: Make the video
         env:
           SCRIPT: ${{ github.event.inputs.script }}
+          FORMAT: ${{ github.event.inputs.format }}
         run: |
           export MESA_GL_VERSION_OVERRIDE=3.3
-          xvfb-run -a python vox/make_video.py "$SCRIPT"
+          N="$(basename "$SCRIPT" .json)"
+          case "$FORMAT" in
+            reel*)    xvfb-run -a python vox/make_video.py "$SCRIPT" --size 1080x1920 --name "${N}_reel" ;;
+            youtube*) xvfb-run -a python vox/make_video.py "$SCRIPT" --size 1920x1080 --name "${N}_youtube" ;;
+            both*)    xvfb-run -a python vox/make_video.py "$SCRIPT" --size 1080x1920 --name "${N}_reel"
+                      xvfb-run -a python vox/make_video.py "$SCRIPT" --size 1920x1080 --name "${N}_youtube" ;;
+            *)        xvfb-run -a python vox/make_video.py "$SCRIPT" ;;
+          esac
 
       - name: Upload video (download from the run page)
         uses: actions/upload-artifact@v4

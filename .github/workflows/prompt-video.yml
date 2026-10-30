@@ -1,0 +1,104 @@
+name: Prompt to video
+
+# Actions -> "Prompt to video" -> Run workflow -> type what you want. Claude writes the script,
+# the voice is generated, Vox effects are added, and the video lands in outputs/.
+# One-time setup: Settings -> Secrets and variables -> Actions -> New repository secret: ANTHROPIC_API_KEY
+on:
+  workflow_dispatch:
+    inputs:
+      prompt:
+        description: "What video? e.g. 60 sec Nepali promo for Ram Digital: Google Ads, TikTok Ads, UGC AI video, AI automation"
+        required: true
+      format:
+        description: "Format"
+        type: choice
+        options: ["both (9:16 + 16:9)", "reel 9:16", "youtube 16:9"]
+        default: "both (9:16 + 16:9)"
+      voice:
+        description: "Voice"
+        type: choice
+        options: ["auto", "ne-NP-SagarNeural", "ne-NP-HemkalaNeural", "en-US-GuyNeural", "en-US-JennyNeural", "hi-IN-MadhurNeural", "hi-IN-SwaraNeural"]
+        default: "auto"
+      commit:
+        description: "Save the video + script into the repo (otherwise only as a download)"
+        type: boolean
+        default: true
+
+permissions:
+  contents: write
+
+concurrency:
+  group: render-effects
+  cancel-in-progress: false
+
+jobs:
+  make:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+          cache-dependency-path: requirements.txt
+
+      - name: Install ffmpeg + Python packages
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core libgl1 libegl1 libgles2 libglib2.0-0 xvfb
+          pip install -q -r requirements.txt edge-tts
+
+      - name: Cache models and fonts
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/fxkit
+          key: fxkit-models-v1
+
+      - name: Download models and fonts
+        run: bash install.sh
+
+      - name: Write the script with Claude
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CLAUDE_MODEL: ${{ vars.CLAUDE_MODEL }}
+          PROMPT: ${{ github.event.inputs.prompt }}
+          VOICE: ${{ github.event.inputs.voice }}
+        run: |
+          SLUG="auto_$(date +%Y%m%d_%H%M%S)"
+          echo "SLUG=$SLUG" >> "$GITHUB_ENV"
+          ARGS=()
+          if [ "$VOICE" != "auto" ]; then ARGS+=(--voice "$VOICE"); fi
+          python vox/prompt_to_script.py "$PROMPT" --out "vox/scripts/auto/$SLUG.json" "${ARGS[@]}"
+          cat "vox/scripts/auto/$SLUG.json"
+
+      - name: Make the video(s)
+        env:
+          FORMAT: ${{ github.event.inputs.format }}
+        run: |
+          export MESA_GL_VERSION_OVERRIDE=3.3
+          S="vox/scripts/auto/$SLUG.json"
+          case "$FORMAT" in
+            reel*)    xvfb-run -a python vox/make_video.py "$S" --size 1080x1920 --name "${SLUG}_reel" ;;
+            youtube*) xvfb-run -a python vox/make_video.py "$S" --size 1920x1080 --name "${SLUG}_youtube" ;;
+            *)        xvfb-run -a python vox/make_video.py "$S" --size 1080x1920 --name "${SLUG}_reel"
+                      xvfb-run -a python vox/make_video.py "$S" --size 1920x1080 --name "${SLUG}_youtube" ;;
+          esac
+
+      - name: Upload video (download from the run page)
+        uses: actions/upload-artifact@v4
+        with:
+          name: prompt-video
+          path: |
+            outputs/${{ env.SLUG }}_*.mp4
+            vox/scripts/auto/${{ env.SLUG }}.json
+          if-no-files-found: error
+
+      - name: Save into the repo
+        if: inputs.commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -f outputs/${SLUG}_*.mp4 outputs/${SLUG}_*_plan.json vox/scripts/auto/${SLUG}.json
+          git commit -m "Prompt video: ${SLUG} [skip ci]" || echo "nothing to commit"
+          git pull --rebase -q && git push
