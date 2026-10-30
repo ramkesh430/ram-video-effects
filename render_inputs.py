@@ -28,7 +28,8 @@ def main():
     a = ap.parse_args()
     files = [a.target] if os.path.isfile(a.target) else sorted(
         f for f in glob.glob(os.path.join(a.target, "*")) if f.lower().endswith(MEDIA) and "_clip." not in f)
-    if not files: sys.exit(f"No videos/photos found in {a.target}")
+    if not files:
+        print(f"No videos/photos found in {a.target} - nothing to do"); return
     os.makedirs(a.out, exist_ok=True); ok = 0
     for f in files:
         plan = pick_plan(f, a.plan)
