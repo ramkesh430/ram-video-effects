@@ -293,19 +293,29 @@ class Tracker:
     def __init__(self, model_path, face_path, W, H):
         self.W, self.H = W, H
         self.seg = self.fd = self.haar = None
-        import mediapipe as mp
-        from mediapipe.tasks.python import vision, BaseOptions
-        self.mp = mp
-        if model_path and os.path.exists(model_path):
-            self.seg = vision.ImageSegmenter.create_from_options(vision.ImageSegmenterOptions(
-                base_options=BaseOptions(model_asset_path=model_path),
-                output_confidence_masks=True, running_mode=vision.RunningMode.IMAGE))
-        else:
+        try:
+            import mediapipe as mp
+            from mediapipe.tasks.python import vision, BaseOptions
+            self.mp = mp
+        except Exception as e:
+            print(f"WARNING: mediapipe unavailable ({e}); 'behind head' layering disabled", file=sys.stderr)
+            vision = None
+        if vision and model_path and os.path.exists(model_path):
+            try:
+                self.seg = vision.ImageSegmenter.create_from_options(vision.ImageSegmenterOptions(
+                    base_options=BaseOptions(model_asset_path=model_path),
+                    output_confidence_masks=True, running_mode=vision.RunningMode.IMAGE))
+            except Exception as e:
+                print(f"WARNING: could not start person cut-out ({e}); 'behind head' layering disabled", file=sys.stderr)
+        elif vision:
             print("WARNING: no person-segmentation model; 'behind head' layering disabled", file=sys.stderr)
-        if face_path and os.path.exists(face_path):
-            self.fd = vision.FaceDetector.create_from_options(vision.FaceDetectorOptions(
-                base_options=BaseOptions(model_asset_path=face_path), min_detection_confidence=0.5))
-        else:
+        if vision and face_path and os.path.exists(face_path):
+            try:
+                self.fd = vision.FaceDetector.create_from_options(vision.FaceDetectorOptions(
+                    base_options=BaseOptions(model_asset_path=face_path), min_detection_confidence=0.5))
+            except Exception as e:
+                print(f"WARNING: face detector failed ({e}); using fallback", file=sys.stderr)
+        if self.fd is None:
             hp = os.path.join(getattr(cv2, "data", None) and cv2.data.haarcascades or "",
                               "haarcascade_frontalface_default.xml")
             if os.path.exists(hp): self.haar = cv2.CascadeClassifier(hp)
