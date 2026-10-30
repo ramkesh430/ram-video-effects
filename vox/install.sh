@@ -11,6 +11,7 @@ mkdir -p "$CACHE/fonts" "$SKILL"
 echo "==> Python packages"
 $PY -m pip install -q -r "$HERE/../requirements.txt" 2>/dev/null || \
 $PY -m pip install -q --break-system-packages -r "$HERE/../requirements.txt"
+$PY -m pip install -q edge-tts 2>/dev/null || $PY -m pip install -q --break-system-packages edge-tts   # AI voice for make_video.py
 
 echo "==> ffmpeg"
 if ! command -v ffmpeg >/dev/null 2>&1; then
@@ -52,8 +53,8 @@ find "$CACHE/fonts" -size -1k -delete 2>/dev/null
 
 echo "==> Engine + Claude skill"
 FX="$HERE/fx.py"; [ -f "$FX" ] || FX="$HERE/../fx.py"
-cp "$FX" "$HERE/vox.py" "$CACHE/"
-cp "$FX" "$HERE/vox.py" "$HERE/SKILL.md" "$SKILL/"
+cp "$FX" "$HERE/vox.py" "$HERE/make_video.py" "$HERE/prompt_to_script.py" "$CACHE/"
+cp "$FX" "$HERE/vox.py" "$HERE/make_video.py" "$HERE/prompt_to_script.py" "$HERE/SKILL.md" "$SKILL/"
 
 
 echo "==> Self-test"

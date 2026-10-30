@@ -8,6 +8,7 @@ New-Item -ItemType Directory -Force -Path (Join-Path $Cache "fonts"), $Skill | O
 
 Write-Host "==> Python packages"
 python -m pip install -q -r (Join-Path $Here "..\requirements.txt")
+python -m pip install -q edge-tts   # AI voice for make_video.py
 
 Write-Host "==> ffmpeg"
 if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
@@ -36,8 +37,8 @@ foreach ($f in @("ofl/anton/Anton-Regular.ttf","ofl/archivoblack/ArchivoBlack-Re
 
 Write-Host "==> Engine + Claude skill"
 $Fx = Join-Path $Here "fx.py"; if (-not (Test-Path $Fx)) { $Fx = Join-Path $Here "..\fx.py" }
-Copy-Item $Fx, (Join-Path $Here "vox.py") $Cache -Force
-Copy-Item $Fx, (Join-Path $Here "vox.py"), (Join-Path $Here "SKILL.md") $Skill -Force
+Copy-Item $Fx, (Join-Path $Here "vox.py"), (Join-Path $Here "make_video.py"), (Join-Path $Here "prompt_to_script.py") $Cache -Force
+Copy-Item $Fx, (Join-Path $Here "vox.py"), (Join-Path $Here "make_video.py"), (Join-Path $Here "prompt_to_script.py"), (Join-Path $Here "SKILL.md") $Skill -Force
 
 
 python (Join-Path $Cache "vox.py") --list | Select-Object -First 1 | Out-Null
