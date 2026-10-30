@@ -1,6 +1,6 @@
 ---
 name: ram-vox-effects
-description: Vox-style explainer video editing - paper cut-out look, newspaper clippings with yellow highlighter, maps with pins, paper bar/line charts, big numbers, timelines, quote cards, document reveals, archive film and block-wipe transitions (plus the 62 ram-video-effects). Use when the user asks for "Vox editing", "Vox style", an explainer/documentary look, or any of these effects on a video or photo.
+description: Vox-style explainer video editing (22 effects) - paper cut-out look, newspaper clippings with yellow highlighter, maps with pins, paper bar/line charts, big numbers, icon arrays, A-vs-B splits, timelines, quote cards, document reveals and redactions, arrows, source tags, archive film and block-wipe transitions (plus the 62 ram-video-effects). Use when the user asks for "Vox editing", "Vox style", an explainer/documentary look, or any of these effects on a video or photo.
 ---
 
 # Ram's Vox Effects
@@ -9,7 +9,7 @@ The user gives a video (or photo) and asks for a Vox-style edit in plain words, 
 "Vox style intro with the headline 'Why rent is so high'", "map of Kathmandu at 8 seconds",
 "bar chart of these numbers when I say 'compare'". Reply in the user's language (often Nepali in Roman script).
 
-The engine is `vox.py` in this skill folder. It loads `fx.py` (same folder) and adds 17 Vox effects, so a plan
+The engine is `vox.py` in this skill folder. It loads `fx.py` (same folder) and adds 22 Vox effects, so a plan
 can mix Vox effects with all 62 fx effects (captions, whip-zoom, glitch ...). Run `python vox.py --list` for every effect and its params.
 
 ## Vox effects
@@ -34,6 +34,12 @@ CUTAWAYS (full screen)
 - map-pin: map zooms to a pin + place label (`place`, `sub`, `x`, `y` 0-1 pin position, `image` = real map screenshot)
 - doc-reveal: document with camera push and red circle (`image` = screenshot, `circle` [x,y,w,h] 0-1 of the page, `note`)
 - photo-drop: taped sepia archive photos drop behind the person (`images` folder, `captions`)
+- redact: document with black redaction bars + stamp (`lines` = which text lines, `stamp`, `image`)
+- compare-split: full-screen A vs B, numbers count up (`left`, `right`, `left_value`, `right_value`, `prefix`, `note`)
+POINTERS
+- arrow-callout: hand-drawn arrow draws to a point (`x`,`y` target 0-1, `from_x`,`from_y` label position, `text`)
+- icon-array: grid of people icons, `highlight` of `total` turn yellow (`label`) - "1 in 4 ..."
+- source-tag: small "Source: ..." chip in the corner - put one on every fact/chart
 
 `[brackets]` = highlighted words in highlight-clip, marker-text and quote-card.
 Use the user's REAL facts, numbers, sources and quotes - ask if missing; never invent statistics or quotes.
@@ -42,9 +48,9 @@ The built-in map is a stylised placeholder, not a real map: for a real place ask
 ## A good Vox sequence (adapt to the video)
 1. Intro 0-4 s: `paper-room` + `torn-headline` + `context-label`
 2. `block-wipe` on each section change
-3. Facts: `big-number` / `vox-bars` / `vox-line` with `paper-grain`
+3. Facts: `big-number` / `vox-bars` / `vox-line` / `icon-array` / `compare-split` + `source-tag`
 4. Places: `map-pin`; history: `archive-film` + `photo-drop` or `vox-timeline`
-5. Evidence: `highlight-clip` or `doc-reveal`; voices: `quote-card`
+5. Evidence: `highlight-clip`, `doc-reveal` or `redact`; voices: `quote-card`; point at things with `arrow-callout`
 6. Ending: `marker-text` with the main point; add `captions` from fx if wanted
 Keep each card 2.5-4 s; leave gaps where the face is clean.
 

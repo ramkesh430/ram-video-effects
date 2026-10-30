@@ -1,7 +1,7 @@
 # Vox effects - every option
 
-All 17 Vox effects with their default options. Every effect also takes `start` and `end` (seconds).
-`vox.py` also runs all 62 effects of fx.py (see `python vox.py --list`).
+All 22 Vox effects with their default options. Every effect also takes `start` and `end` (seconds).
+`vox.py` also runs all 62 effects of fx.py (see `python vox/vox.py --list`).
 
 ## paper-room
 Background becomes textured paper; you become a cut-out with a white sticker border (Vox collage look)
@@ -120,4 +120,39 @@ Taped archive photos drop onto the wall behind you, one by one, with typed capti
 
 ```json
 {"fx": "photo-drop", "start": 0, "end": 3, "images": null, "captions": ["1990", "2006", "2015"], "count": 3, "sepia": true}
+```
+
+## arrow-callout
+Hand-drawn arrow draws itself to a point (x,y 0-1) with a marker label - point at anything
+
+```json
+{"fx": "arrow-callout", "start": 0, "end": 3, "text": "look here", "x": 0.5, "y": 0.45, "from_x": 0.2, "from_y": 0.7, "color": "#E2372B"}
+```
+
+## redact
+Cut to a document; black redaction bars swipe over lines, then a stamp lands (image = your screenshot)
+
+```json
+{"fx": "redact", "start": 0, "end": 3, "image": null, "title": "CONFIDENTIAL MEMO", "lines": [2, 3, 6, 9, 10], "stamp": "CLASSIFIED"}
+```
+
+## compare-split
+Full-screen A vs B on paper: two halves, numbers count up, the bigger side gets a yellow bar
+
+```json
+{"fx": "compare-split", "start": 0, "end": 3, "left": "NEPAL", "right": "INDIA", "left_value": 1400, "right_value": 2500, "prefix": "$", "suffix": "", "note": "GDP per person", "source": ""}
+```
+
+## icon-array
+Grid of people icons; some turn yellow one by one ('1 in 4 households...')
+
+```json
+{"fx": "icon-array", "start": 0, "end": 3, "total": 100, "highlight": 25, "cols": 10, "label": "1 in 4 households has someone abroad", "y": null}
+```
+
+## source-tag
+Small 'Source: ...' citation chip in the bottom corner (keep it on while a fact is shown)
+
+```json
+{"fx": "source-tag", "start": 0, "end": 3, "text": "Source: World Bank, 2024", "corner": "right", "y": 0.955}
 ```

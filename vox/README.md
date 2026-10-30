@@ -1,12 +1,12 @@
 # Ram's Vox Effects
 
-17 Vox-style explainer effects for Claude: paper cut-out look, newspaper clippings with a yellow highlighter,
-maps with pins, paper charts, big numbers, timelines, quote cards, document reveals, archive film and block-wipe transitions.
+22 Vox-style explainer effects for Claude: paper cut-out look, newspaper clippings with a yellow highlighter,
+maps with pins, paper charts, big numbers, icon arrays, A-vs-B splits, timelines, quote cards, document reveals, redactions, arrows, archive film and block-wipe transitions.
 This folder sits inside ram-video-effects and uses the same engine (`../fx.py`), so all 62 effects work here too.
 
 Made by Ramkesh Gupta (@ramkesh430).
 
-## The 17 effects
+## The 22 effects
 
 | group | effect | what it does |
 |---|---|---|
@@ -27,8 +27,15 @@ Made by Ramkesh Gupta (@ramkesh430).
 | Cutaways | `map-pin` | map zooms in, a pin drops with the place name |
 | | `doc-reveal` | document, camera push, red circle around the key part |
 | | `photo-drop` | taped archive photos drop behind you |
+| | `redact` | document lines get blacked out, then a stamp |
+| | `compare-split` | full-screen A vs B with counting numbers |
+| Pointers | `arrow-callout` | hand-drawn arrow to any point with a label |
+| | `icon-array` | grid of people, "1 in 4" turn yellow |
+| | `source-tag` | small "Source: ..." chip in the corner |
 
 Every option: [EFFECTS.md](EFFECTS.md).
+
+![Vox effects preview](vox_preview.jpg)
 
 ## Use it
 

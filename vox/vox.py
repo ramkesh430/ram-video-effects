@@ -6,7 +6,7 @@ Ram's Vox Effects - Vox-style explainer edits (paper, highlights, maps, charts, 
   python vox.py IN.mp4 prev.png --plan plan.json --preview 1.5,4      # check frames
   python vox.py --list                                                 # every effect (Vox + the 62 fx effects)
 
-vox.py adds 17 Vox-style effects on top of fx.py (same engine, same plan.json format),
+vox.py adds 22 Vox-style effects on top of fx.py (same engine, same plan.json format),
 so a plan can mix both: [{"fx":"paper-room","start":0,"end":4}, {"fx":"captions",...}]
 """
 import math, os, random, sys
@@ -568,6 +568,133 @@ class PhotoDrop(FX):
             s = lerp(1.35, 1, ease_out_cubic(q))
             paste(canvas, rot(shadowed(scale_img(im, s), int(u * 0.015), (0, 6), 110), ang), W * sx, H * sy + im.height * 0.25,
                   clamp(q * 2) * self.outa(lt), center=True)
+
+# ================================================================= more Vox staples
+def doc_page(c, pw, ph, title, seed=2):
+    """generated document page: title, rule, grey text lines. returns (page, list of line boxes)."""
+    u = U(c); pg = paper_img(pw, ph, "#FBFAF6", 41); d = ImageDraw.Draw(pg); rr = random.Random(seed)
+    paste(pg, T(title, "serif", fit_size(title, "serif", pw * 0.8, u * 0.06), INK), pw * 0.08, ph * 0.06)
+    d.line((pw * 0.08, ph * 0.13, pw * 0.92, ph * 0.13), fill=rgba(INK), width=2); y = ph * 0.17; boxes = []
+    while y < ph * 0.92:
+        L = pw * rr.uniform(0.55, 0.84) if rr.random() > 0.15 else pw * 0.3
+        d.rounded_rectangle((pw * 0.08, y, pw * 0.08 + L, y + u * 0.014), radius=4, fill=(60, 60, 60, 150))
+        boxes.append((pw * 0.08, y, pw * 0.08 + L, y + u * 0.014))
+        y += u * 0.036 + (u * 0.03 if rr.random() < 0.12 else 0)
+    return pg, boxes
+
+@register
+class ArrowCallout(FX):
+    name = "arrow-callout"; help = "Hand-drawn arrow draws itself to a point (x,y 0-1) with a marker label - point at anything"
+    params = {"text": "look here", "x": 0.5, "y": 0.45, "from_x": 0.2, "from_y": 0.7, "color": RED}
+    def top(self, c, canvas, lt):
+        W, H = c.W, c.H; u = U(c); col = rgba(self.p["color"]); a = self.outa(lt)
+        if a < 1: col = col[:3] + (int(255 * a),)
+        p0 = (W * float(self.p["from_x"]), H * float(self.p["from_y"])); p1 = (W * float(self.p["x"]), H * float(self.p["y"]))
+        mx, my = (p0[0] + p1[0]) / 2, (p0[1] + p1[1]) / 2; nx, ny = -(p1[1] - p0[1]), p1[0] - p0[0]
+        ctrl = (mx + nx * 0.25, my + ny * 0.25); q = ease_in_out((lt - 0.15) / 0.5)
+        pts = []
+        for i in range(31):
+            t = i / 30 * q
+            pts.append(((1 - t) ** 2 * p0[0] + 2 * (1 - t) * t * ctrl[0] + t * t * p1[0], (1 - t) ** 2 * p0[1] + 2 * (1 - t) * t * ctrl[1] + t * t * p1[1]))
+        d = ImageDraw.Draw(canvas); lw = max(4, int(u * 0.01))
+        if q > 0.02: d.line(pts, fill=col, width=lw, joint="curve")
+        if q > 0.98:
+            ang = math.atan2(pts[-1][1] - pts[-4][1], pts[-1][0] - pts[-4][0]); hl = u * 0.05
+            for s in (-1, 1):
+                d.line([p1, (p1[0] - hl * math.cos(ang + s * 0.5), p1[1] - hl * math.sin(ang + s * 0.5))], fill=col, width=lw)
+        t = T(self.p["text"], "marker", u * 0.06, self.p["color"])
+        lab = card(t.width + u * 0.05, t.height + u * 0.04, u * 0.01, (250, 247, 238, 240)); paste(lab, t, u * 0.025, u * 0.02)
+        paste(canvas, rot(shadowed(lab, int(u * 0.01), (0, 4), 90), -4), p0[0], p0[1] + (u * 0.06 if p0[1] > p1[1] else -u * 0.06), clamp(lt / 0.2) * a, center=True)
+
+@register
+class Redact(FX):
+    name = "redact"; help = "Cut to a document; black redaction bars swipe over lines, then a stamp lands (image = your screenshot)"
+    params = {"image": None, "title": "CONFIDENTIAL MEMO", "lines": [2, 3, 6, 9, 10], "stamp": "CLASSIFIED"}
+    def grade(self, c, img, lt):
+        W, H = c.W, c.H; u = U(c); st = self.__dict__.setdefault("_st", {})
+        pw, ph = W * 0.84, H * 0.84; ox, oy = (W - pw) / 2, (H - ph) / 2
+        if "pg" not in st:
+            st["bg"] = Image.fromarray(paper_tex(W, H, "#D9D2C2", 33).astype(np.uint8)).convert("RGBA")
+            if self.p["image"] and os.path.exists(str(self.p["image"])):
+                st["pg"] = load_images([self.p["image"]], 1, pw, ph)[0]
+                st["boxes"] = [(pw * 0.08, ph * (0.2 + i * 0.06), pw * 0.9, ph * (0.2 + i * 0.06) + u * 0.03) for i in range(12)]
+            else:
+                st["pg"], st["boxes"] = doc_page(c, pw, ph, self.p["title"], 5)
+        pg = st["pg"].copy(); d = ImageDraw.Draw(pg); idx = [int(i) for i in as_list(self.p["lines"]) if int(i) < len(st["boxes"])]
+        for k, i in enumerate(idx):
+            q = ease_in_out((lt - 0.4 - k * 0.22) / 0.3)
+            if q <= 0: continue
+            x0, y0, x1, y1 = st["boxes"][i]; pad = u * 0.008
+            d.rectangle((x0 - pad, y0 - pad, x0 + (x1 - x0 + pad * 2) * q - pad, y1 + pad), fill=(12, 12, 12, 255))
+        base = st["bg"].copy(); paste(base, shadowed(pg, int(u * 0.02), (0, 10), 110), ox - u * 0.04, oy - u * 0.04)
+        sq = (lt - 0.6 - len(idx) * 0.22) / 0.3
+        if self.p.get("stamp") and sq > 0:
+            t = T(self.p["stamp"], "display", u * 0.11, RED); bx = card(t.width + u * 0.06, t.height + u * 0.05, u * 0.015, (0, 0, 0, 0), rgba(RED), max(5, int(u * 0.01)))
+            paste(bx, t, u * 0.03, u * 0.025)
+            paste(base, rot(scale_img(bx, lerp(1.8, 1, ease_out_cubic(sq))), 12), W / 2, H * 0.62, clamp(sq * 2) * 0.88, center=True)
+        a = full_alpha(lt, self.dur, 0.2, 0.2)
+        return img * (1 - a) + np.asarray(base.convert("RGB"), np.float32) * a
+
+@register
+class CompareSplit(FX):
+    name = "compare-split"; help = "Full-screen A vs B on paper: two halves, numbers count up, the bigger side gets a yellow bar"
+    params = {"left": "NEPAL", "right": "INDIA", "left_value": 1400, "right_value": 2500, "prefix": "$", "suffix": "",
+              "note": "GDP per person", "source": ""}
+    def grade(self, c, img, lt):
+        W, H = c.W, c.H; u = U(c); a = full_alpha(lt, self.dur, 0.2, 0.2)
+        base = Image.fromarray(paper_tex(W, H, PAPER, 51).astype(np.uint8)).convert("RGBA"); d = ImageDraw.Draw(base)
+        vert = H > W; q = ease_out_cubic((lt - 0.3) / max(0.6, self.dur * 0.45))
+        lv, rv = float(self.p["left_value"]), float(self.p["right_value"]); mx = max(lv, rv) or 1
+        halves = [((0, 0, W, H / 2) if vert else (0, 0, W / 2, H)), ((0, H / 2, W, H) if vert else (W / 2, 0, W, H))]
+        d.rectangle(halves[1], fill=(226, 219, 202, 255))
+        for (x0, y0, x1, y1), name, v in zip(halves, (self.p["left"], self.p["right"]), (lv, rv)):
+            cx, cy = (x0 + x1) / 2, (y0 + y1) / 2
+            paste(base, T(name, "heavy", fit_size(name, "heavy", (x1 - x0) * 0.8, u * 0.07), INK), cx, cy - u * 0.14, center=True)
+            s = f"{self.p['prefix']}{count_fmt(int(round(v * q)))}{self.p['suffix']}"
+            full = f"{self.p['prefix']}{count_fmt(int(v))}{self.p['suffix']}"
+            paste(base, T(s, "display", fit_size(full, "display", (x1 - x0) * 0.8, u * 0.15), INK), cx, cy + u * 0.01, center=True)
+            bw = (x1 - x0) * 0.7 * v / mx * q
+            d.rectangle((cx - (x1 - x0) * 0.35, cy + u * 0.11, cx - (x1 - x0) * 0.35 + bw, cy + u * 0.135), fill=rgba(YELLOW if v == mx else INK))
+        vs = card(u * 0.14, u * 0.14, u * 0.07, rgba(INK)); paste(vs, T("VS", "display", u * 0.06, "#FFFFFF"), u * 0.07, u * 0.07, center=True)
+        paste(base, scale_img(vs, max(0.05, ease_out_back(lt / 0.4))), W / 2, H / 2, center=True)
+        if self.p.get("note"):
+            n = T(self.p["note"], "mono", u * 0.032, INK); nb = card(n.width + u * 0.03, n.height + u * 0.02, 0, rgba(YELLOW)); paste(nb, n, u * 0.015, u * 0.01)
+            paste(base, nb, W / 2, H * 0.06 if vert else H * 0.08, center=True)
+        if self.p.get("source"): paste(base, T("Source: " + self.p["source"], "mono", u * 0.022, GREY), u * 0.04, H - u * 0.06)
+        return img * (1 - a) + np.asarray(base.convert("RGB"), np.float32) * a
+
+@register
+class IconArray(FX):
+    name = "icon-array" ; help = "Grid of people icons; some turn yellow one by one ('1 in 4 households...')"
+    params = {"total": 100, "highlight": 25, "cols": 10, "label": "1 in 4 households has someone abroad", "y": None}
+    def front(self, c, canvas, lt):
+        W, H = c.W, c.H; u = U(c); n = int(self.p["total"]); k = int(self.p["highlight"]); cols = int(self.p["cols"])
+        rows = math.ceil(n / cols); w = u * 0.86; lab_h = u * 0.09
+        cell = min((w - u * 0.1) / cols, (H * 0.4 - u * 0.1 - lab_h) / rows)            # keep the card under ~40% of the frame
+        lab = T(self.p["label"], "bold", fit_size(self.p["label"], "bold", w - u * 0.1, u * 0.04), INK)
+        w = max(cols * cell, lab.width) + u * 0.1
+        h = rows * cell + u * 0.1 + lab_h; cardi = paper_card(w, h, "#F7F3EA", 29, "tb"); d = ImageDraw.Draw(cardi)
+        q = clamp((lt - 0.5) / max(0.6, self.dur * 0.5)); lit = int(k * q)
+        for i in range(n):
+            r_, c_ = divmod(i, cols); x = (w - cols * cell) / 2 + c_ * cell + cell / 2; y = u * 0.05 + r_ * cell + cell / 2
+            if ease_out_cubic((lt - i * 0.004) / 0.25) <= 0: continue
+            col = rgba(YELLOW) if i < lit else (60, 60, 60, 200); s = cell * 0.37
+            d.ellipse((x - s * 0.32, y - s * 0.95, x + s * 0.32, y - s * 0.3), fill=col)
+            d.rounded_rectangle((x - s * 0.5, y - s * 0.22, x + s * 0.5, y + s * 0.95), radius=s * 0.3, fill=col)
+            if i < lit: d.rounded_rectangle((x - s * 0.5, y - s * 0.22, x + s * 0.5, y + s * 0.95), radius=s * 0.3, outline=rgba(INK), width=2)
+        paste(cardi, lab, w / 2, h - lab_h / 2 - u * 0.02, center=True)
+        yc = H * float(self.p["y"]) if self.p["y"] is not None else H - h / 2 - H * 0.04
+        paste(canvas, shadowed(cardi, int(u * 0.02), (0, 8), 90), W / 2, lerp(H + h, yc, ease_out_cubic(lt / 0.4)), self.outa(lt), center=True)
+
+@register
+class SourceTag(FX):
+    name = "source-tag"; help = "Small 'Source: ...' citation chip in the bottom corner (keep it on while a fact is shown)"
+    params = {"text": "Source: World Bank, 2024", "corner": "right", "y": 0.955}
+    def top(self, c, canvas, lt):
+        u = U(c); t = T(self.p["text"], "mono", u * 0.024, INK); bx = card(t.width + u * 0.03, t.height + u * 0.02, 0, (247, 243, 234, 230))
+        paste(bx, t, u * 0.015, u * 0.01)
+        x = c.W - bx.width - u * 0.04 if self.p["corner"] == "right" else u * 0.04
+        paste(canvas, bx, x, c.H * float(self.p["y"]) - bx.height, self.env(lt, 0.2, 0.2))
 
 if __name__ == "__main__":
     fx.main()
