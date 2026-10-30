@@ -1,0 +1,191 @@
+[
+{
+"fx": "paper-grain",
+"amount": 0.2,
+"start": 0,
+"end": 68.54599999999999
+},
+{
+"fx": "torn-headline",
+"kicker": "EXPLAINED",
+"text": "What is digital marketing?",
+"y": 0.12,
+"start": 0.1,
+"end": 9.398
+},
+{
+"fx": "marker-text",
+"text": "Is your business [online?]",
+"y": 0.55,
+"size": 0.09,
+"start": 0.8,
+"end": 9.398
+},
+{
+"fx": "context-label",
+"text": "NEPAL, 2026",
+"sub": "Ep. 01",
+"y": 0.86,
+"start": 1.2,
+"end": 9.398
+},
+{
+"fx": "torn-headline",
+"kicker": "THE NUMBERS",
+"text": "Nepal is already online",
+"y": 0.12,
+"start": 9.498,
+"end": 17.744
+},
+{
+"fx": "big-number",
+"value": 16600000,
+"label": "internet users in Nepal (56%)",
+"y": 0.5,
+"start": 9.798,
+"end": 17.744
+},
+{
+"fx": "source-tag",
+"text": "Source: DataReportal, Digital 2026 (Oct 2025)",
+"y": 0.94,
+"start": 9.998,
+"end": 17.744
+},
+{
+"fx": "torn-headline",
+"kicker": "FACEBOOK",
+"text": "14.8 million people reachable",
+"y": 0.12,
+"start": 17.844,
+"end": 26.57
+},
+{
+"fx": "icon-array",
+"total": 100,
+"highlight": 50,
+"cols": 10,
+"label": "1 in 2 Nepalis can see a Facebook ad",
+"y": 0.56,
+"start": 18.044,
+"end": 26.57
+},
+{
+"fx": "source-tag",
+"text": "Source: Meta ad reach via DataReportal (Oct 2025)",
+"y": 0.97,
+"start": 18.344,
+"end": 26.57
+},
+{
+"fx": "torn-headline",
+"kicker": "WHERE THEY ARE",
+"text": "Pick the right platform",
+"y": 0.12,
+"start": 26.67,
+"end": 35.108
+},
+{
+"fx": "vox-bars",
+"title": "Reach in Nepal (million people)",
+"labels": [
+"Facebook",
+"Messenger",
+"Instagram",
+"LinkedIn*"
+],
+"values": [
+14.8,
+11.0,
+4.35,
+2.3
+],
+"suffix": "M",
+"highlight": 0,
+"source": "DataReportal. *LinkedIn = members",
+"y": 0.52,
+"start": 26.87,
+"end": 35.108
+},
+{
+"fx": "quote-card",
+"quote": "Old ads reach [everyone.] Digital ads reach [the right people.]",
+"by": "— the power of targeting",
+"start": 35.108,
+"end": 46.55
+},
+{
+"fx": "torn-headline",
+"kicker": "HOW TO START",
+"text": "4 simple steps",
+"y": 0.12,
+"start": 46.65,
+"end": 60.752
+},
+{
+"fx": "checklist",
+"title": "Your first month online",
+"style": "light",
+"items": [
+"Know your customer",
+"Make useful content",
+"Run small test ads",
+"Measure and improve"
+],
+"notes": [
+"who and where",
+"reels, posts, tips",
+"small budget",
+"reach, clicks, sales"
+],
+"start": 46.95,
+"end": 60.752
+},
+{
+"fx": "marker-text",
+"text": "Right place.|Right people.|[Right message.]",
+"y": 0.5,
+"size": 0.1,
+"start": 60.952,
+"end": 67.946
+},
+{
+"fx": "sticker",
+"text": "FOLLOW",
+"x": 0.5,
+"y": 0.86,
+"angle": -6,
+"start": 63.252,
+"end": 67.946
+},
+{
+"fx": "block-wipe",
+"start": 9.098,
+"end": 9.698
+},
+{
+"fx": "block-wipe",
+"start": 17.444,
+"end": 18.044
+},
+{
+"fx": "block-wipe",
+"start": 26.27,
+"end": 26.87
+},
+{
+"fx": "block-wipe",
+"start": 34.808,
+"end": 35.408
+},
+{
+"fx": "block-wipe",
+"start": 46.25,
+"end": 46.85
+},
+{
+"fx": "block-wipe",
+"start": 60.452,
+"end": 61.052
+}
+]
