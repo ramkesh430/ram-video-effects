@@ -1,0 +1,5 @@
+__pycache__/
+*.pyc
+*_effects.mp4
+!ram_couple_effects.mp4
+.DS_Store

@@ -1,0 +1,8 @@
+[{"fx":"backdrop-word","start":0,"end":3,"text":"RAM","y":0.3},
+ {"fx":"heart-burst","start":0.5,"end":3},
+ {"fx":"glitter-spotlight","start":3,"end":5.5},
+ {"fx":"neon-outline","start":5.5,"end":8,"color":"#FF4FA3"},
+ {"fx":"sticker","start":5.8,"end":8,"text":"TOGETHER","color":"#FF4FA3","x":0.5,"y":0.12,"angle":-6},
+ {"fx":"cover-star","start":8,"end":10,"title":"LOVE","lines":["THE COUPLE ISSUE","SPECIAL EDITION"]},
+ {"fx":"red-collage","start":10,"end":12,"word":"FOREVER","lines":["TWO HEARTS.","ONE HOME.","FOREVER."]},
+ {"fx":"heart-burst","start":10.2,"end":12}]
