@@ -1,0 +1,456 @@
+{
+ "name": "nepal_digital_marketing_doc",
+ "voice": "ne-NP-SagarNeural",
+ "rate": "-5%",
+ "size": [
+  1920,
+  1080
+ ],
+ "background": "paper",
+ "transitions": true,
+ "global": [
+  {
+   "fx": "paper-grain",
+   "amount": 0.2
+  }
+ ],
+ "scenes": [
+  {
+   "say": "आज नेपालमा एउटा सानो पसलले पनि फेसबुक पेजबाट हजारौँ ग्राहकसम्म पुग्न सक्छ। तर तीस वर्षअघि, नेपालमा इन्टरनेट नै थिएन। यो कथा हो, नेपालमा डिजिटल मार्केटिङ कसरी जन्मियो, कसरी बढ्यो, र अब कता जाँदैछ।",
+   "fx": [
+    {
+     "fx": "torn-headline",
+     "at": 0.2,
+     "kicker": "A VOX-STYLE DOCUMENTARY",
+     "text": "The story of digital marketing in Nepal",
+     "y": 0.3
+    },
+    {
+     "fx": "marker-text",
+     "at": 4.0,
+     "text": "1994 → [2026]",
+     "y": 0.66,
+     "size": 0.12
+    },
+    {
+     "fx": "context-label",
+     "at": 1.0,
+     "text": "NEPAL, 1994-2026",
+     "y": 0.86
+    }
+   ]
+  },
+  {
+   "say": "इन्टरनेटअघि नेपालमा मार्केटिङ भनेको पत्रिकाको विज्ञापन, रेडियोको जिङ्गल, टेलिभिजन र सडकछेउका होर्डिङ बोर्ड थियो। विज्ञापन महँगो थियो, र कसले हेर्‍यो, कसले किन्यो भनेर नाप्ने कुनै उपाय थिएन।",
+   "fx": [
+    {
+     "fx": "quote-card",
+     "at": 0,
+     "quote": "Before the internet, ads reached [everyone] and measured [no one.]",
+     "by": "— marketing in the 1990s"
+    }
+   ]
+  },
+  {
+   "say": "कथा सुरु हुन्छ सन् उन्नाइस सय चौरानब्बेमा। त्यतिबेला मर्कन्टाइलले नेपालमा पहिलो पटक इमेल र इन्टरनेट सेवा ल्यायो। एक वर्षपछि वर्ल्डलिङ्क आयो। तर सुरुमा इन्टरनेट केही अफिस र थोरै घरमा मात्र सीमित थियो।",
+   "fx": [
+    {
+     "fx": "torn-headline",
+     "at": 0.2,
+     "kicker": "CHAPTER 1",
+     "text": "The first connection",
+     "y": 0.13
+    },
+    {
+     "fx": "vox-timeline",
+     "at": 0.6,
+     "end": 9,
+     "years": [
+      "1994",
+      "1995",
+      "2005",
+      "2011",
+      "2017"
+     ],
+     "events": [
+      "Mercantile brings email + internet",
+      "WorldLink starts",
+      "Mobile internet (GPRS)",
+      "3G arrives",
+      "4G arrives"
+     ],
+     "active": 0,
+     "y": 0.62
+    },
+    {
+     "fx": "vox-timeline",
+     "at": 9,
+     "years": [
+      "1994",
+      "1995",
+      "2005",
+      "2011",
+      "2017"
+     ],
+     "events": [
+      "Mercantile brings email + internet",
+      "WorldLink starts",
+      "Mobile internet (GPRS)",
+      "3G arrives",
+      "4G arrives"
+     ],
+     "active": 1,
+     "y": 0.62
+    },
+    {
+     "fx": "context-label",
+     "at": 1.0,
+     "text": "KATHMANDU, 1994",
+     "y": 0.88
+    }
+   ]
+  },
+  {
+   "say": "दुई हजार पाँचमा मोबाइलमा जीपीआरएस इन्टरनेट आयो, दुई हजार एघारमा थ्रीजी, र दुई हजार सत्रमा फोरजी। अब इन्टरनेट अफिसको कम्प्युटरबाट निस्केर मानिसको खल्तीमा पुग्यो।",
+   "fx": [
+    {
+     "fx": "vox-timeline",
+     "at": 0,
+     "end": -3.5,
+     "years": [
+      "1994",
+      "1995",
+      "2005",
+      "2011",
+      "2017"
+     ],
+     "events": [
+      "Mercantile brings email + internet",
+      "WorldLink starts",
+      "Mobile internet (GPRS)",
+      "3G arrives",
+      "4G arrives"
+     ],
+     "y": 0.62
+    },
+    {
+     "fx": "marker-text",
+     "at": -3.4,
+     "text": "The internet moved|into [our pockets.]",
+     "y": 0.55,
+     "size": 0.1
+    },
+    {
+     "fx": "source-tag",
+     "at": 0.5,
+     "text": "Source: NepaliTelecom, Wikipedia",
+     "y": 0.96
+    }
+   ]
+  },
+  {
+   "say": "आज कति जना अनलाइन छन्? डेटारिपोर्टलका अनुसार, सन् दुई हजार बीसको सुरुमा नेपालमा एक करोड दुई लाख इन्टरनेट प्रयोगकर्ता थिए। दुई हजार पच्चीसको अक्टोबरसम्म यो सङ्ख्या एक करोड छैसट्ठी लाख पुग्यो, अर्थात् जनसङ्ख्याको छपन्न प्रतिशत।",
+   "fx": [
+    {
+     "fx": "torn-headline",
+     "at": 0.2,
+     "kicker": "CHAPTER 2",
+     "text": "Nepal goes online",
+     "y": 0.13
+    },
+    {
+     "fx": "vox-line",
+     "at": 0.6,
+     "title": "Internet users in Nepal (million)",
+     "values": [
+      10.21,
+      11.51,
+      15.4,
+      16.6
+     ],
+     "labels": [
+      "Jan 2020",
+      "Oct 2025"
+     ],
+     "prefix": "",
+     "suffix": "M",
+     "y": 0.6,
+     "color": "#E2372B"
+    },
+    {
+     "fx": "source-tag",
+     "at": 0.6,
+     "text": "Source: DataReportal, Digital 2020/2022/2024/2026",
+     "y": 0.96
+    }
+   ]
+  },
+  {
+   "say": "इन्टरनेटसँगै आयो फेसबुक। आज फेसबुक विज्ञापनबाट करिब एक करोड अठचालीस लाख मानिससम्म पुग्न सकिन्छ, अर्थात् हरेक दुई जनामा एक जना। मेसेन्जरमा करिब एक करोड दश लाख, र इन्स्टाग्राममा करिब त्रिचालीस लाख।",
+   "fx": [
+    {
+     "fx": "torn-headline",
+     "at": 0.2,
+     "kicker": "CHAPTER 3",
+     "text": "Facebook becomes the marketplace",
+     "y": 0.13
+    },
+    {
+     "fx": "vox-bars",
+     "at": 0.6,
+     "title": "Ad reach in Nepal (million people)",
+     "labels": [
+      "Facebook",
+      "Messenger",
+      "Instagram"
+     ],
+     "values": [
+      14.8,
+      11.0,
+      4.35
+     ],
+     "suffix": "M",
+     "highlight": 0,
+     "source": "DataReportal, Oct 2025",
+     "y": 0.6
+    }
+   ]
+  },
+  {
+   "say": "फेसबुक विज्ञापनको सबैभन्दा ठूलो शक्ति टार्गेटिङ हो। पोखराका बीसदेखि तीस वर्षका, फिटनेसमा रुचि राख्ने मानिसलाई मात्र विज्ञापन देखाउन सकिन्छ। अनि कति जनाले हेरे, क्लिक गरे र किने, सबै नाप्न सकिन्छ।",
+   "fx": [
+    {
+     "fx": "torn-headline",
+     "at": 0.2,
+     "kicker": "THE BIG SHIFT",
+     "text": "Targeting and measurement",
+     "y": 0.13
+    },
+    {
+     "fx": "marker-text",
+     "at": 0.8,
+     "text": "Who: [age 20-30, Pokhara]|Interest: [fitness]|Result: [measured]",
+     "y": 0.64,
+     "size": 0.08
+    }
+   ]
+  },
+  {
+   "say": "यसले व्यापार गर्ने तरिका नै बदल्यो। कपडा, केक, मोबाइल, घरजग्गा: धेरै व्यवसायले पसल खोल्नुअघि नै फेसबुक पेज खोले। अर्डर मेसेन्जरमा आउन थाल्यो, र सामान घरसम्म।",
+   "fx": [
+    {
+     "fx": "photo-drop",
+     "at": 0.2,
+     "captions": [
+      "CLOTHES",
+      "CAKES",
+      "PHONES"
+     ],
+     "sepia": false
+    },
+    {
+     "fx": "marker-text",
+     "at": 3.5,
+     "text": "Open a page before|[opening a shop.]",
+     "y": 0.7,
+     "size": 0.09
+    }
+   ]
+  },
+  {
+   "say": "तर अनलाइन बिक्रीका लागि अनलाइन भुक्तानी पनि चाहिन्थ्यो। सन् दुई हजार नौमा इसेवा बेटा रूपमा सुरु भयो, नेपालको पहिलो डिजिटल वालेट। दुई हजार सत्रतिर खल्ती पनि लोकप्रिय हुँदै गयो। र दुई हजार बीसको लकडाउनले धेरैलाई पहिलो पटक डिजिटल भुक्तानी गर्न बाध्य बनायो।",
+   "fx": [
+    {
+     "fx": "torn-headline",
+     "at": 0.2,
+     "kicker": "CHAPTER 4",
+     "text": "Money goes digital",
+     "y": 0.13
+    },
+    {
+     "fx": "vox-timeline",
+     "at": 0.6,
+     "years": [
+      "2009",
+      "2017",
+      "2020"
+     ],
+     "events": [
+      "eSewa launches (beta)",
+      "Khalti rises",
+      "Lockdown pushes digital payments"
+     ],
+     "y": 0.62
+    },
+    {
+     "fx": "source-tag",
+     "at": 0.6,
+     "text": "Sources: Onlinekhabar (2022), Nepali Times (2021)",
+     "y": 0.96
+    }
+   ]
+  },
+  {
+   "say": "दुई हजार एक्काइसमा नेपालमा करिब चालीस लाख डिजिटल वालेट प्रयोगकर्ता भएको अनुमान थियो। दुई हजार बाइससम्म इसेवाको मात्रै करिब साठी लाख खाता पुगेको थियो।",
+   "fx": [
+    {
+     "fx": "big-number",
+     "at": 0.2,
+     "end": 6.2,
+     "value": 4000000,
+     "label": "digital wallet users, estimate (2021)",
+     "y": 0.5
+    },
+    {
+     "fx": "big-number",
+     "at": 6.4,
+     "value": 6000000,
+     "label": "eSewa account holders, about (2022)",
+     "y": 0.5
+    },
+    {
+     "fx": "source-tag",
+     "at": 0.4,
+     "text": "Sources: Nepali Times (2021), Onlinekhabar (2022)",
+     "y": 0.96
+    }
+   ]
+  },
+  {
+   "say": "यसैबीच एउटा नयाँ पेशा जन्मियो: कन्टेन्ट क्रिएटर। युट्युब, टिकटक र इन्स्टाग्राममा नेपाली क्रिएटरहरूले ब्रान्डसँग मिलेर उत्पादन चिनाउन थाले। धेरै ब्रान्डले ठूला विज्ञापनसँगै भरोसायोग्य अनुहारमा पनि लगानी गर्न थाले।",
+   "fx": [
+    {
+     "fx": "photo-drop",
+     "at": 0.2,
+     "captions": [
+      "YOUTUBE",
+      "TIKTOK",
+      "INSTAGRAM"
+     ],
+     "sepia": false
+    },
+    {
+     "fx": "marker-text",
+     "at": 4.0,
+     "text": "The new billboard:|[a trusted face.]",
+     "y": 0.7,
+     "size": 0.09
+    }
+   ]
+  },
+  {
+   "say": "तर डिजिटल बजारमा जोखिम पनि छ। सन् दुई हजार तेइस नोभेम्बरमा सरकारले टिकटक बन्द गर्‍यो, र यो करिब नौ महिनापछि, दुई हजार चौबीस अगस्टमा मात्र खुल्यो। टिकटकमा भर परेका क्रिएटर र व्यवसायले आफ्ना दर्शक एकाएक गुमाए।",
+   "fx": [
+    {
+     "fx": "redact",
+     "at": 0,
+     "title": "TIKTOK, NOVEMBER 13, 2023",
+     "lines": [
+      1,
+      2,
+      4,
+      5,
+      7,
+      8,
+      10
+     ],
+     "stamp": "BLOCKED"
+    },
+    {
+     "fx": "context-label",
+     "at": 1.5,
+     "text": "NOV 2023 - AUG 2024",
+     "sub": "Chapter 5: when platforms go dark",
+     "y": 0.86
+    }
+   ]
+  },
+  {
+   "say": "दुई हजार पच्चीस सेप्टेम्बरमा, दर्ता नगरेका छब्बीसवटा सामाजिक सञ्जाल बन्द गरिए, जसमा फेसबुक, युट्युब र इन्स्टाग्राम पनि थिए। यसको विरोधमा युवाहरू सडकमा उत्रिए। प्रदर्शनमा कम्तीमा उन्नाइस जनाको ज्यान गयो, र सरकारले प्रतिबन्ध फिर्ता लियो।",
+   "fx": [
+    {
+     "fx": "highlight-clip",
+     "at": 0.2,
+     "source": "What happened",
+     "date": "September 2025",
+     "headline": "26 unregistered platforms blocked",
+     "body": "The block, [including Facebook, YouTube and Instagram,] led to youth protests. At least 19 people were killed, and the ban was withdrawn.",
+     "y": 0.55,
+     "angle": -2
+    },
+    {
+     "fx": "source-tag",
+     "at": 0.6,
+     "text": "Sources: Al Jazeera, Scroll.in (Sept 2025)",
+     "y": 0.96
+    }
+   ]
+  },
+  {
+   "say": "यसको पाठ के हो? एउटै प्लेटफर्ममा मात्र भर नपर्नुहोस्। आफ्नो वेबसाइट, ग्राहकको फोन नम्बर वा इमेल सूची, र एकभन्दा बढी प्लेटफर्ममा उपस्थिति, यी नै डिजिटल व्यवसायको बीमा हुन्।",
+   "fx": [
+    {
+     "fx": "torn-headline",
+     "at": 0.2,
+     "kicker": "THE LESSON",
+     "text": "Don't build on one platform only",
+     "y": 0.13
+    },
+    {
+     "fx": "marker-text",
+     "at": 0.8,
+     "text": "1. Your own [website]|2. A customer [phone / email list]|3. More than [one platform]|4. [Back up] your content",
+     "y": 0.66,
+     "size": 0.06
+    }
+   ]
+  },
+  {
+   "say": "अब अर्को चरण सुरु भइसकेको छ। छोटा भिडियो, अनलाइन भुक्तानी र एआई टुलले सानो व्यवसायलाई पनि ठूला कम्पनीसँग प्रतिस्पर्धा गर्न सक्ने बनाएका छन्। तर अझै पनि करिब चवालीस प्रतिशत नेपाली इन्टरनेटबाहिर छन्। ती नै अर्को ठूलो बजार हुन्।",
+   "fx": [
+    {
+     "fx": "torn-headline",
+     "at": 0.2,
+     "kicker": "CHAPTER 6",
+     "text": "What comes next",
+     "y": 0.13
+    },
+    {
+     "fx": "icon-array",
+     "at": 0.6,
+     "total": 100,
+     "highlight": 56,
+     "cols": 10,
+     "label": "56 in 100 Nepalis are online. 44 are not, yet.",
+     "y": 0.6
+    },
+    {
+     "fx": "source-tag",
+     "at": 0.6,
+     "text": "Source: DataReportal, Digital 2026 (Oct 2025)",
+     "y": 0.96
+    }
+   ]
+  },
+  {
+   "say": "मर्कन्टाइलको पहिलो इमेलदेखि आजको रिल्ससम्म, नेपालको डिजिटल मार्केटिङ तीस वर्षभन्दा बढीमा यहाँ आइपुगेको छ। अर्को अध्याय तपाईं लेख्नुहुन्छ। भिडियो मन पर्‍यो भने फलो गर्नुहोस्।",
+   "fx": [
+    {
+     "fx": "marker-text",
+     "at": 0.2,
+     "text": "From the first email|to [your next reel.]",
+     "y": 0.45,
+     "size": 0.11
+    },
+    {
+     "fx": "sticker",
+     "at": -3.5,
+     "text": "FOLLOW",
+     "x": 0.84,
+     "y": 0.86,
+     "angle": -6
+    }
+   ]
+  }
+ ]
+}
