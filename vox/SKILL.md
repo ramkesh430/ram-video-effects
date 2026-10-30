@@ -68,4 +68,15 @@ Keep each card 2.5-4 s; leave gaps where the face is clean.
 5. **Render:** `python ~/.cache/fxkit/vox.py VIDEO.mp4 VIDEO_vox.mp4 --plan plan.json` (`--max-short 2160` for 4K). Audio kept.
 6. Tell the user what was added and when; offer tweaks.
 
+## Prompt -> finished video (voice + effects)
+When the user just describes a video ("60 sec Nepali promo for my agency", "5 min documentary on X"), build it end to end:
+1. Write a script JSON like `vox/scripts/ram_digital_promo.json`: `voice` (ne-NP-SagarNeural / ne-NP-HemkalaNeural / en-US-GuyNeural ...),
+   `size` ([1080,1920] reel or [1920,1080] YouTube), `scenes` with `say` (voice text in the user's language, numbers in words)
+   and `fx` (Vox effects with `at`/`end` in seconds from the scene start; negative = before the scene ends). On-screen text in short English.
+   Use only real facts; add a `source-tag` to every number. No invented stats, clients, testimonials or quotes.
+2. Preview: `python make_video.py SCRIPT.json --silent --preview` (add `--size 1920x1080` for landscape) and look at the PNGs.
+3. Render: `python make_video.py SCRIPT.json` (needs `pip install edge-tts` + internet for the voice). `--size` and `--name` make other formats.
+   Without internet for the voice, push the script and run the GitHub action "Make Vox video" (format: both = 9:16 + 16:9).
+4. Fully automatic on GitHub: action "Prompt to video" takes a plain prompt, Claude writes the script (secret ANTHROPIC_API_KEY), then renders.
+
 Notes: draft quality - the user approves before posting. No music or sound effects are added.

@@ -80,11 +80,24 @@ python vox/vox.py in.mp4 out.mp4 --plan plan.json                 # render
 `make_video.py` turns a script into a finished explainer: AI voice-over (edge-tts, e.g. Nepali `ne-NP-SagarNeural`),
 a moving paper background, Vox effects timed to each line, and block-wipes between scenes.
 
-- **On GitHub:** Actions → **Make Vox video** → Run workflow → script `vox/scripts/digital_marketing_ne.json`.
+- **On GitHub:** Actions → **Make Vox video** → Run workflow → script `vox/scripts/digital_marketing_ne.json` (format: as in the script, 9:16, 16:9 or both).
   The video lands in `outputs/digital_marketing_ne.mp4` (and as a download on the run page).
 - **Locally:** `pip install edge-tts` then `python vox/make_video.py vox/scripts/digital_marketing_ne.json`
   (`--silent --preview` checks the layout without a voice).
 - Copy a script in [scripts/](scripts/) to make your own: each scene has `say` (voice text) and `fx` (effects, `at`/`end` in seconds from the scene start).
+
+## Type a prompt, get a video (fully automatic)
+
+Actions → **Prompt to video** → Run workflow → type what you want, pick the format (9:16, 16:9 or both) and voice.
+Claude writes the script, the AI voice is generated, the Vox effects are added, and the video lands in `outputs/`
+(plus the script in `vox/scripts/auto/`, so you can edit it and re-render with **Make Vox video**).
+
+One-time setup: **Settings → Secrets and variables → Actions → New repository secret**, name `ANTHROPIC_API_KEY`,
+value = your key from console.anthropic.com (API usage is billed by Anthropic). Optional variable `CLAUDE_MODEL` to pick a model.
+
+Example prompts:
+- `60 sec Nepali promo for Ram Digital: Google Ads, TikTok Ads, UGC AI video, AI automation. End with "DM us".`
+- `3 min Nepali explainer: why small shops in Nepal should use Google Business Profile`
 
 ## Honest notes
 

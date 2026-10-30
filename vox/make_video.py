@@ -84,10 +84,12 @@ def main():
     ap.add_argument("--preview", action="store_true"); ap.add_argument("--max-short", default="1080")
     ap.add_argument("--crf", default="26", help="quality (lower = bigger file)")
     ap.add_argument("--max-mb", type=float, default=90, help="re-encode if the video is bigger (GitHub limit is 100 MB)")
+    ap.add_argument("--size", help="override the frame size, e.g. 1080x1920 (reel) or 1920x1080 (YouTube)")
+    ap.add_argument("--name", help="override the output name")
     a = ap.parse_args()
     S = json.load(open(a.script, encoding="utf-8"))
-    name = S.get("name") or os.path.splitext(os.path.basename(a.script))[0]
-    size = S.get("size", [1080, 1920]); voice = S.get("voice", "ne-NP-SagarNeural"); rate = S.get("rate", "+0%")
+    name = a.name or S.get("name") or os.path.splitext(os.path.basename(a.script))[0]
+    size = [int(v) for v in a.size.lower().split("x")] if a.size else S.get("size", [1080, 1920]); voice = S.get("voice", "ne-NP-SagarNeural"); rate = S.get("rate", "+0%")
     out = a.out or os.path.join(ROOT, "outputs", name + ".mp4")
     os.makedirs(os.path.dirname(os.path.abspath(out)), exist_ok=True)
     tmp = tempfile.mkdtemp(prefix="voxvid_")

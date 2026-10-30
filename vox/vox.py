@@ -260,12 +260,19 @@ class MarkerText(FX):
     params = {"text": "This is the [real reason]|nobody talks about", "y": 0.78, "size": 0.075}
     def front(self, c, canvas, lt):
         W, H = c.W, c.H; u = U(c); lines = as_list(self.p["text"]); sz = u * float(self.p["size"])
-        hq = ease_in_out((lt - 0.35) / 0.6); strips = []
-        for i, ln in enumerate(lines):
-            blk = marker_block([ln], "heavy", sz, INK, YELLOW, hq, u * 0.86 if H >= W else W * 0.8)
-            strip = paper_card(blk.width + sz * 0.5, blk.height + sz * 0.35, "#FAF7EF", 11 + i, "lr")
-            paste(strip, blk, sz * 0.25, sz * 0.17)
-            strips.append(rot(shadowed(strip, int(u * 0.012), (0, 4), 90), (-1.5 if i % 2 else 1.2)))
+        hq = ease_in_out((lt - 0.35) / 0.6)
+        def build(sz):
+            out = []
+            for i, ln in enumerate(lines):
+                blk = marker_block([ln], "heavy", sz, INK, YELLOW, hq, u * 0.86 if H >= W else W * 0.8)
+                strip = paper_card(blk.width + sz * 0.5, blk.height + sz * 0.35, "#FAF7EF", 11 + i, "lr")
+                paste(strip, blk, sz * 0.25, sz * 0.17)
+                out.append(rot(shadowed(strip, int(u * 0.012), (0, 4), 90), (-1.5 if i % 2 else 1.2)))
+            return out
+        strips = build(sz)
+        room = H * (0.5 if W > H else 0.62)                     # keep the block clear of headlines and labels
+        total = sum(st.height * 0.92 for st in strips)
+        if total > room: strips = build(sz * room / total * 0.97)
         y = H * float(self.p["y"]) - sum(st.height * 0.92 for st in strips) / 2      # the block is centred on y
         for i, strip in enumerate(strips):
             q = ease_out_cubic((lt - i * 0.12) / 0.35)
@@ -280,14 +287,15 @@ class TornHeadline(FX):
     params = {"kicker": "EXPLAINED", "text": "Why Nepal's rupee is pegged to India", "y": 0.13}
     def front(self, c, canvas, lt):
         W, H = c.W, c.H; u = U(c); q = ease_out_cubic(lt / 0.45)
-        lines = wrap(self.p["text"], "heavy", u * 0.068, u * 0.82)
-        hd = Image.new("RGBA", (int(u * 0.86), int(len(lines) * u * 0.085)), (0, 0, 0, 0))
+        bw = u * 0.86 if H >= W else W * 0.7                     # landscape: wider, so the headline stays on one line
+        lines = wrap(self.p["text"], "heavy", u * 0.068, bw - u * 0.04)
+        hd = Image.new("RGBA", (int(bw), int(len(lines) * u * 0.085)), (0, 0, 0, 0))
         for i, ln in enumerate(lines): paste(hd, T(ln, "heavy", u * 0.068, INK), 0, i * u * 0.085)
         sw = W * 1.1; sh = hd.height + u * 0.16
         strip = paper_card(sw, sh, "#F6F1E6", 21, "tb")
         k = T(self.p["kicker"], "mono", u * 0.03, INK); kb = card(k.width + u * 0.03, k.height + u * 0.02, 0, rgba(YELLOW))
         paste(kb, k, u * 0.015, u * 0.01)
-        x0 = (W - u * 0.86) / 2 + (sw - W) / 2
+        x0 = (W - bw) / 2 + (sw - W) / 2
         paste(strip, kb, x0, u * 0.035); paste(strip, hd, x0, u * 0.035 + kb.height + u * 0.015)
         strip = rot(shadowed(strip, int(u * 0.015), (0, 6), 100), -1.5)
         paste(canvas, strip, lerp(-W, W / 2, q), H * float(self.p["y"]) + sh / 2 - u * 0.05, self.outa(lt), center=True)
