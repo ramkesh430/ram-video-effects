@@ -54,11 +54,11 @@ vox-bars: Nepal 26%, Bangladesh 5%, India 3% - source World Bank
 **Install for Claude Code:**
 
 ```bash
-bash vox/install.sh                                          # Mac / Linux
-powershell -ExecutionPolicy Bypass -File vox\install.ps1     # Windows
+bash install.sh                                              # Mac / Linux (main installer, includes Vox)
+powershell -ExecutionPolicy Bypass -File install.ps1         # Windows
 ```
 
-**Claude app:** upload `vox/ram-vox-effects.zip` in Settings → Capabilities → Skills.
+**Claude app:** upload the one `ram-video-effects.zip` (repo root) in Settings → Capabilities → Skills - it includes the Vox effects.
 
 **Without Claude:**
 
