@@ -468,15 +468,26 @@ class LockedOn(FX):
 @register
 class BackdropWord(FX):
     name = "backdrop-word"; help = "Giant word drops in BEHIND your head (style: display|serif|serif-italic)"
-    params = {"text": "FOCUS", "color": "#FFFFFF", "style": "display", "y": None, "glow": False}
+    params = {"text": "FOCUS", "color": "auto", "style": "display", "y": None, "glow": False}
     def behind(self, c, canvas, lt):
         W, H = c.W, c.H; kind = self.p["style"]
         txt = str(self.p["text"]); txt = txt.upper() if kind == "display" else txt
         size = fit_size(txt, kind, W * 0.96, int(H * 0.3))
-        im = T(txt, kind, size, self.p["color"])
+        st = self.__dict__.setdefault("_bw", {})
+        # the head covers only the lower part of the word, so it stays readable
+        yc = self.p["y"] * H if self.p["y"] is not None else max(size * 0.55, c.face[1] - c.face[3] * 0.85 - size * 0.12)
+        if "col" not in st:
+            col = self.p["color"]
+            if col in (None, "auto"):                       # pick black or white against the wall behind the word
+                y0, y1 = int(max(0, yc - size * 0.5)), int(min(H, yc + size * 0.5))
+                lum = float(np.mean(c.raw[y0:y1] @ np.array([0.299, 0.587, 0.114]))) if y1 > y0 else 128
+                col = "#111111" if lum > 150 else "#FFFFFF"
+            st["col"] = col
+        im = T(txt, kind, size, st["col"])
         if self.p.get("glow"):
             g = im.filter(ImageFilter.GaussianBlur(size * 0.08)); g.alpha_composite(im); im = g
-        yc = self.p["y"] * H if self.p["y"] is not None else c.face[1] - c.face[3] * 0.55
+        else:
+            im = shadowed(im, int(size * 0.04), (0, int(size * 0.02)), 90)
         y = yc - (1 - ease_out_back(lt / 0.5, 1.2)) * H * 0.35
         paste(canvas, im, W / 2, y, self.env(lt, 0.12, 0.3), center=True)
 

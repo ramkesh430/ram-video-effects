@@ -43,7 +43,7 @@ Giant word drops in BEHIND your head (style: display|serif|serif-italic)
 | option | default |
 |---|---|
 | `text` | `"FOCUS"` |
-| `color` | `"#FFFFFF"` |
+| `color` | `"auto"` (black or white, whichever reads better on the wall behind) |
 | `style` | `"display"` |
 | `y` | `null` |
 | `glow` | `false` |
@@ -614,10 +614,9 @@ Two of you side by side (wide + close-up)
 
 ---
 
-# Part 2 - the 22 Vox effects (vox.py)
+# Part 2 - the 28 Vox effects (vox.py)
 
-All 22 Vox effects with their default options. Every effect also takes `start` and `end` (seconds).
-`vox.py` also runs all 62 effects of fx.py (see `python vox/vox.py --list`).
+Every effect also takes `start` and `end` (seconds). `make_video.py` adds `voice-captions`, `bg-shapes` and `camera-drift` automatically.
 
 ## paper-room
 Background becomes textured paper; you become a cut-out with a white sticker border (Vox collage look)
@@ -771,4 +770,46 @@ Small 'Source: ...' citation chip in the bottom corner (keep it on while a fact 
 
 ```json
 {"fx": "source-tag", "start": 0, "end": 3, "text": "Source: World Bank, 2024", "corner": "right", "y": 0.955}
+```
+
+## voice-captions
+Word-by-word subtitles of the voice-over (Nepali or English); the spoken word lights up yellow
+
+```json
+{"fx": "voice-captions", "start": 0, "end": 3, "y": null, "per": 4, "size": 0.052, "auto": false, "language": null, "model": "small"}
+```
+
+## bg-shapes
+Slow drifting paper shapes (circles, rings, dots, lines) behind everything - keeps a text-only video alive
+
+```json
+{"fx": "bg-shapes", "start": 0, "end": 3, "count": 9, "alpha": 0.35, "seed": 3}
+```
+
+## camera-drift
+Slow camera push in (or out) with a gentle sway - put one on every scene so nothing is ever static
+
+```json
+{"fx": "camera-drift", "start": 0, "end": 3, "zoom": 1.07, "direction": "in", "sway": 0.006}
+```
+
+## search-bar
+Generic search engine mock-up: a query types itself, results drop in, the Sponsored one is yours (no real logos)
+
+```json
+{"fx": "search-bar", "start": 0, "end": 3, "query": "digital marketing agency near me", "title": "Your Business - Get more customers", "url": "yourbusiness.com", "y": 0.55}
+```
+
+## phone-feed
+A phone with a short-video feed scrolling; one clip is an ad with a label and a button (no real app logos)
+
+```json
+{"fx": "phone-feed", "start": 0, "end": 3, "captions": ["Your product", "Your offer", "Your story"], "label": "Sponsored", "button": "Shop now", "y": 0.56, "ai_label": false, "images": null}
+```
+
+## chat-flow
+Chat bubbles: a customer asks, an automatic reply answers (AUTO tag) - for AI automation / chatbots
+
+```json
+{"fx": "chat-flow", "start": 0, "end": 3, "messages": [["in", "Hi, price kati ho?"], ["out", "Namaste! Price list pathaudai chhu."], ["out", "Order garna yo link: ..."]], "y": 0.56}
 ```

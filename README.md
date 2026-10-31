@@ -1,6 +1,6 @@
 # Ram's Video Effects
 
-**62 video effects for Claude + 22 Vox-style explainer effects + voiced videos from a prompt.** Drop a video (or photo) into Claude, ask for an effect in plain words, and it renders the edit: words behind your head, orbiting reels, spotlights, glass widgets, tier lists, captions, confetti and more. Or type a prompt and get a finished Vox-style video with an AI voice-over (Nepali, English, Hindi), in 9:16 and 16:9.
+**62 video effects for Claude + 28 Vox-style explainer effects + voiced videos from a prompt.** Drop a video (or photo) into Claude, ask for an effect in plain words, and it renders the edit: words behind your head, orbiting reels, spotlights, glass widgets, tier lists, captions, confetti and more. Or type a prompt and get a finished Vox-style video with an AI voice-over (Nepali, English, Hindi), in 9:16 and 16:9.
 
 Made by Ramkesh Gupta ([@ramkesh430](https://github.com/ramkesh430)).
 
@@ -13,11 +13,11 @@ One photo turned into a 12-second reel: [ram_couple_effects.mp4](ram_couple_effe
 
 <img src="original_photo.jpg" width="280">
 
-## Vox-style pack (22 more effects)
+## Vox-style pack (28 more effects)
 
-The [vox/](vox/) folder adds **22 Vox-style explainer effects**: paper cut-out look, newspaper clippings with a yellow
+The [vox/](vox/) folder adds **28 Vox-style explainer effects**: paper cut-out look, newspaper clippings with a yellow
 highlighter, maps with pins, paper bar/line charts, big numbers, icon arrays, A-vs-B splits, timelines, quote cards,
-document reveals, redactions, hand-drawn arrows, source tags, archive film and block-wipe transitions.
+document reveals, redactions, hand-drawn arrows, source tags, archive film, block-wipe transitions, search / phone-feed / chat mock-ups, word-by-word Nepali or English subtitles and camera motion.
 
 ![Vox effects](vox/vox_preview.jpg)
 
@@ -28,8 +28,8 @@ document reveals, redactions, hand-drawn arrows, source tags, archive film and b
 
 ## Voiced videos from a script or a prompt
 
-`vox/make_video.py` builds a complete video with no footage needed: AI voice-over, a moving paper background,
-Vox effects timed to each line, and transitions. Made with it (all in [outputs/](outputs/)):
+`vox/make_video.py` builds a complete video with no footage needed: AI voice-over, word-by-word subtitles, an original
+music bed (ducked under the voice), whoosh/pop sound effects, camera motion, Vox effects timed to each line, and transitions. Made with it (all in [outputs/](outputs/)):
 
 | video | format | what |
 |---|---|---|
@@ -93,10 +93,10 @@ git clone https://github.com/ramkesh430/ram-video-effects && bash ram-video-effe
 git clone https://github.com/ramkesh430/ram-video-effects; powershell -ExecutionPolicy Bypass -File ram-video-effects\install.ps1
 ```
 
-The installer sets up Python packages (plus edge-tts for AI voices), ffmpeg, the two AI models (person cut-out + face finder), optional fonts, and copies the one skill (62 + 22 Vox effects + voiced videos) to `~/.claude/skills/ram-video-effects`. Then restart Claude Code.
+The installer sets up Python packages (plus edge-tts for AI voices), ffmpeg, the two AI models (person cut-out + face finder), optional fonts, and copies the one skill (62 + 28 Vox effects + voiced videos) to `~/.claude/skills/ram-video-effects`. Then restart Claude Code.
 
 **Claude app (web / desktop):** download [ram-video-effects.zip](ram-video-effects.zip) and upload it in **Settings → Capabilities → Skills**.
-This one zip has everything: the 62 effects, the 22 Vox effects, the voiced-video maker (`make_video.py`), the prompt-to-script tool and the example scripts.
+This one zip has everything: the 62 effects, the 28 Vox effects, the voiced-video maker (`make_video.py`), the prompt-to-script tool and the example scripts.
 
 ## Use it
 
@@ -146,12 +146,12 @@ noise · lineup · locked-on · orbit · lean-in · backdrop-word · spotlight �
 | `SKILL.md` | Claude skill instructions |
 | `install.sh` / `install.ps1` | installers |
 | `requirements.txt` | Python packages |
-| `EFFECTS.md` | every effect and its options (62 + 22 Vox) |
+| `EFFECTS.md` | every effect and its options (62 + 28 Vox) |
 | `example_plan.json` | the plan behind the example video |
-| `ram-video-effects.zip` | the whole skill in one zip for the Claude app (all 84 effects + voiced videos + example scripts) |
+| `ram-video-effects.zip` | the whole skill in one zip for the Claude app (all 90 effects + voiced videos + example scripts) |
 | `render_inputs.py` | renders everything in `inputs/` (used by the GitHub Action) |
 | `.github/workflows/render.yml` | the "Render effects" GitHub Action |
-| `vox/vox.py` | 22 Vox-style effects (loads `fx.py`, so all 84 effects work) |
+| `vox/vox.py` | 28 Vox-style effects (loads `fx.py`, so all 90 effects work) |
 | `vox/make_video.py` | script → voice-over + background + effects → finished video (9:16 or 16:9) |
 | `vox/prompt_to_script.py` | prompt → script, written by Claude (needs `ANTHROPIC_API_KEY`) |
 | `vox/scripts/` | example scripts (promo, explainer, documentary) |

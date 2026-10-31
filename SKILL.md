@@ -1,6 +1,6 @@
 ---
 name: ram-video-effects
-description: All-in-one video kit - 62 talking-head effects (word behind head, orbit, spotlight, glass widgets, tier list, captions, confetti...), 22 Vox-style explainer effects (paper cut-out, newspaper highlights, maps, charts, timelines, quote cards, archive film...) and finished voiced videos from a prompt (AI voice-over in Nepali/English/Hindi, 9:16 or 16:9). Use when the user says /effects, asks to add an effect to a video or photo, asks for Vox style / explainer / documentary editing, or asks to make a video from a topic or prompt.
+description: All-in-one video kit - 62 talking-head effects (word behind head, orbit, spotlight, glass widgets, tier list, captions, confetti...), 28 Vox-style explainer effects (paper cut-out, newspaper highlights, maps, charts, timelines, quote cards, search/phone/chat mock-ups, Nepali subtitles...) and finished voiced videos from a prompt (AI voice-over in Nepali/English/Hindi with subtitles, music and sound effects, 9:16 or 16:9). Use when the user says /effects, asks to add an effect to a video or photo, asks for Vox style / explainer / documentary editing, or asks to make a video from a topic or prompt.
 ---
 
 # Ram's Video Effects (fxkit + Vox + voiced videos)
@@ -11,7 +11,7 @@ Reply in the user's language (often Nepali in Roman script).
 
 Everything is in this one skill folder:
 - `fx.py` - the engine with the 62 effects. Accepts a video OR a photo (a photo becomes a slow-zoom vertical clip).
-- `vox.py` - loads `fx.py` and adds 22 Vox effects; same plan format, so a plan can mix all 84 effects. Use `vox.py` whenever a plan has a Vox effect.
+- `vox.py` - loads `fx.py` and adds 28 Vox effects; same plan format, so a plan can mix all 90 effects. Use `vox.py` whenever a plan has a Vox effect.
 - `make_video.py` - script JSON -> AI voice-over + paper background + effects -> finished video (no footage needed).
 - `prompt_to_script.py` - plain prompt -> script JSON, written by Claude through the API (only for the automatic GitHub action).
 - `scripts/` - example scripts (promo, explainer, documentary). `EFFECTS.md` - every effect and its options.
@@ -94,7 +94,7 @@ Charts, counters and headlines should use the user's real numbers and words - as
      - https://storage.googleapis.com/mediapipe-models/face_detector/blaze_face_short_range/float16/latest/blaze_face_short_range.tflite
      - If blocked: `pip download mediapipe==0.10.14 --no-deps --only-binary=:all: --python-version 3.12 --platform manylinux_2_17_x86_64` and unzip `mediapipe/modules/selfie_segmentation/selfie_segmentation.tflite` + `mediapipe/modules/face_detection/face_detection_short_range.tflite` into `~/.cache/fxkit/`.
    - Optional fonts in `~/.cache/fxkit/fonts/` (Google Fonts, OFL): Anton, Archivo Black, Inter, Instrument Serif, Space Mono, Permanent Marker. Falls back to system fonts.
-2. **Timing by words.** For "when I say X": `pip install faster-whisper`, `WhisperModel("small").transcribe(path, word_timestamps=True)`, use that word's start. Word-triggered effects usually last 1.5-3 s. The same word list feeds the `captions` effect (`"words": [[w,start,end],...]`).
+2. **Timing by words.** For "when I say X": `pip install faster-whisper`, `WhisperModel("small").transcribe(path, word_timestamps=True)`, use that word's start. Subtitles on a talking-head video: add `{"fx": "voice-captions", "start": 0, "end": LEN, "auto": true, "language": "ne"}` to the plan (run with vox.py). Word-triggered effects usually last 1.5-3 s. The same word list feeds the `captions` effect (`"words": [[w,start,end],...]`).
 3. **Plan** `plan.json` next to the video: `[{"fx":"orbit","start":3,"end":6}, {"fx":"reject-stamp","start":7,"end":8.5,"text":"NO"}]`. Effects can stack/overlap.
 4. **Preview first:** `python ~/.cache/fxkit/fx.py VIDEO.mp4 /tmp/fxprev.png --plan plan.json --preview t1,t2 --debug` (one time inside each effect). Look at the PNGs (green = face, magenta = person). Fix anything covering the face, then preview again.
 5. **Render:** `python ~/.cache/fxkit/fx.py VIDEO.mp4 VIDEO_effects.mp4 --plan plan.json` (`--max-short 2160` for 4K). Original audio is kept.
@@ -129,6 +129,12 @@ POINTERS
 - arrow-callout: hand-drawn arrow draws to a point (`x`,`y` target 0-1, `from_x`,`from_y` label position, `text`)
 - icon-array: grid of people icons, `highlight` of `total` turn yellow (`label`) - "1 in 4 ..."
 - source-tag: small "Source: ..." chip in the corner - put one on every fact/chart
+MOCK-UPS + MOTION (generic, no real logos)
+- search-bar: a search query types itself, results drop in, the "Sponsored" one is yours (`query`, `title`, `url`) - Google Ads style
+- phone-feed: phone with a short-video feed, ad label + button (`captions`, `label`, `button`, `ai_label`, `images`) - TikTok/Reels ads, UGC
+- chat-flow: customer bubble + automatic reply with AUTO tag (`messages` [["in"|"out", text], ...]) - chatbots / AI automation
+- voice-captions: word-by-word subtitles, spoken word in yellow, Nepali (Devanagari) or English (`words` [[w,start,end]], or `auto: true` + `language` to transcribe the video with faster-whisper)
+- bg-shapes: slow drifting shapes behind everything | camera-drift: slow push in/out with sway (`direction`)
 
 `[brackets]` = highlighted words in highlight-clip, marker-text and quote-card.
 Use the user's REAL facts, numbers, sources and quotes - ask if missing; never invent statistics or quotes.
@@ -162,6 +168,10 @@ When the user just describes a video ("60 sec Nepali promo for my agency", "5 mi
 2. Preview: `python ~/.cache/fxkit/make_video.py SCRIPT.json --out /tmp/vid/NAME.mp4 --silent --preview` (add `--size 1920x1080` for landscape) and look at the PNGs.
 3. Render: `python ~/.cache/fxkit/make_video.py SCRIPT.json --out NAME.mp4` (always pass `--out`) (needs `pip install edge-tts` + internet for the voice). `--size` and `--name` make other formats.
    Without internet for the voice, push the script to github.com/ramkesh430/ram-video-effects (vox/scripts/) and run the GitHub action "Make Vox video" (format: both = 9:16 + 16:9).
+   make_video.py adds automatically (turn off in the script): `captions` (word-by-word subtitles from the voice timing),
+   `music` ("auto" = original synthesised lo-fi bed, ducked under the voice; "none"; or a path to the user's own licensed track),
+   `sfx` (whoosh on scene changes, soft pops when cards appear), `motion` (camera drift per scene + background shapes). Voice is loudness-normalised.
+   Prefer mock-ups and data over plain text: search-bar for search ads, phone-feed for social ads/UGC, chat-flow for automation.
 4. Fully automatic on GitHub: action "Prompt to video" takes a plain prompt, Claude writes the script (secret ANTHROPIC_API_KEY), then renders.
 
 
