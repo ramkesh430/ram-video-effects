@@ -25,7 +25,11 @@ DATA   big-number{value, prefix, suffix, label, y=0.5} | vox-bars{title, labels[
        vox-timeline{years[], events[], y=0.62, active (optional fixed index)} | compare-split{left, right, left_value, right_value, prefix, suffix, note, source} (FULL SCREEN)
        source-tag{text, y=0.96} - put on every scene that shows a number.
 CUTAWAY doc-reveal{title, note} | redact{title, lines[], stamp} (FULL SCREEN, use alone) | photo-drop{captions[3], sepia=false} (3 labelled cards near the top)
-OTHER  sticker{text, x, y, angle} - small tilted badge (e.g. "DM US", "NEW") | arrow-callout{text, x, y, from_x, from_y}"""
+OTHER  sticker{text, x, y, angle} - small tilted badge (e.g. "DM US", "NEW") | arrow-callout{text, x, y, from_x, from_y}
+MOCK-UPS (prefer these over plain text when they fit; generic, no real logos)
+       search-bar{query, title, url, y=0.56} - search ads / SEO | phone-feed{captions[3], label, button, ai_label, y=0.57} - social ads, UGC
+       chat-flow{messages: [["in"|"out", text], ...], y=0.57} - chatbots, AI automation, customer service
+Subtitles, music, sound effects and camera motion are added automatically - do not add them."""
 
 SYSTEM = f"""You write scripts for a Vox-style explainer/ad video generator. Reply with ONE JSON object only, no prose, no code fences.
 

@@ -19,7 +19,7 @@ sys.path[:0] = [_here, os.path.dirname(_here)]          # fx.py next to vox.py, 
 import fx
 from fx import (FX, register, clamp, lerp, ease_out_cubic, ease_in_out, ease_out_back, hex2rgb, rgba,
                 as_list, font, T, fit_size, wrap, paste, card, shadowed, scale_img, rot, load_images,
-                affine, zoom_on, to_gray, count_fmt)
+                affine, zoom_on, to_gray, count_fmt, rounded)
 
 # ================================================================= Vox palette
 PAPER, INK, YELLOW, RED, BLUE, GREY = "#EFE8D8", "#151515", "#FFE03A", "#E2372B", "#2F5D8A", "#9A958A"
@@ -277,7 +277,8 @@ class MarkerText(FX):
         for i, strip in enumerate(strips):
             q = ease_out_cubic((lt - i * 0.12) / 0.35)
             if q > 0:
-                paste(canvas, strip, lerp(-strip.width, W / 2, q) if i % 2 == 0 else lerp(W + strip.width, W / 2, q), y + strip.height / 2,
+                bob = math.sin(lt * 1.6 + i * 1.3) * u * 0.004 * clamp((lt - 0.5) / 0.4)      # gentle float once landed
+                paste(canvas, strip, lerp(-strip.width, W / 2, q) if i % 2 == 0 else lerp(W + strip.width, W / 2, q), y + strip.height / 2 + bob,
                       self.outa(lt), center=True)
             y += strip.height * 0.92
 
@@ -705,6 +706,210 @@ class SourceTag(FX):
         paste(bx, t, u * 0.015, u * 0.01)
         x = c.W - bx.width - u * 0.04 if self.p["corner"] == "right" else u * 0.04
         paste(canvas, bx, x, c.H * float(self.p["y"]) - bx.height, self.env(lt, 0.2, 0.2))
+
+# ================================================================= motion, captions and UI mock-ups (v2)
+fx.FONT_FILES.setdefault("deva", ["NotoSansDevanagari-Bold.ttf", "NotoSansDevanagariUI-Bold.ttf", "FreeSansBold.ttf",
+                                  "Lohit-Devanagari.ttf", "Mangal.ttf", "mangal.ttf", "Kohinoor.ttc"])
+def has_deva(s): return any("ऀ" <= ch <= "ॿ" for ch in str(s))
+
+def fit_box(c, yc, h, top=None, bottom=0.8):
+    """scale + centre so a block of height h (centred at yc) stays between top and bottom (fractions of H)."""
+    top = top if top is not None else (0.25 if c.H > c.W else 0.31)
+    room = (bottom - top) * c.H; s = min(1.0, room / max(1, h))
+    yc = min(max(yc, top * c.H + h * s / 2), bottom * c.H - h * s / 2)
+    return s, yc
+
+@register
+class VoiceCaptions(FX):
+    name = "voice-captions"; help = "Word-by-word subtitles of the voice-over (Nepali or English); the spoken word lights up yellow"
+    params = {"words": [], "y": None, "per": 4, "size": 0.052}
+    def _chunks(self):
+        st = self.__dict__.setdefault("_ch", None)
+        if st is not None: return st
+        words = [w for w in self.p["words"] if str(w[0]).strip()]; out, cur = [], []
+        for w in words:
+            cur.append(w)
+            end_punct = str(w[0])[-1:] in "।.?!,;:"
+            if len(cur) >= int(self.p["per"]) or end_punct or sum(len(str(x[0])) for x in cur) > 26:
+                out.append(cur); cur = []
+        if cur: out.append(cur)
+        self._ch = out; return out
+    def top(self, c, canvas, lt):
+        t = self.start + lt; chunks = self._chunks()
+        ch = next((k for k in chunks if k[0][1] - 0.05 <= t <= k[-1][2] + 0.25), None)
+        if not ch: return
+        u = U(c); sz = u * float(self.p["size"]); kind = "deva" if has_deva(" ".join(str(w[0]) for w in ch)) else "heavy"
+        ims = []
+        for w, s0, s1 in ch:
+            on = s0 - 0.03 <= t <= s1 + 0.08
+            ims.append((T(str(w), kind, sz, YELLOW if on else "#FFFFFF", stroke=max(2, int(sz * 0.06)), stroke_fill=(0, 0, 0, 255)), on))
+        sp = sz * 0.3; w = sum(i.width for i, _ in ims) + sp * (len(ims) - 1); h = max(i.height for i, _ in ims)
+        pill = card(w + sz * 0.9, h + sz * 0.6, sz * 0.35, (17, 17, 17, 200)); x = sz * 0.45
+        for im, on in ims:
+            paste(pill, im, x, (pill.height - im.height) / 2); x += im.width + sp
+        q = ease_out_back((t - ch[0][1] + 0.05) / 0.18)
+        y = float(self.p["y"]) if self.p["y"] is not None else (0.86 if c.H > c.W else 0.88)
+        paste(canvas, scale_img(pill, max(0.3, min(1.0, 0.85 + 0.15 * q))), c.W / 2, c.H * y, 1.0, center=True)
+
+@register
+class BgShapes(FX):
+    name = "bg-shapes"; help = "Slow drifting paper shapes (circles, rings, dots, lines) behind everything - keeps a text-only video alive"
+    params = {"count": 9, "alpha": 0.35, "seed": 3}
+    def behind(self, c, canvas, lt):
+        u = U(c); r = random.Random(int(self.p["seed"])); a = self.env(lt, 0.6, 0.6) * float(self.p["alpha"])
+        layer = Image.new("RGBA", canvas.size, (0, 0, 0, 0)); d = ImageDraw.Draw(layer)
+        cols = [YELLOW, INK, RED, BLUE, "#FFFFFF"]
+        for i in range(int(self.p["count"])):
+            kind = r.choice(["disc", "ring", "dots", "line", "disc"]); col = rgba(r.choice(cols), 255)
+            x0, y0 = r.uniform(-0.1, 1.1) * c.W, r.uniform(-0.1, 1.1) * c.H; sp = r.uniform(0.15, 0.4) * u / 10
+            ang = r.uniform(0, 6.28); x = x0 + math.cos(ang) * sp * lt; y = y0 + math.sin(ang) * sp * lt
+            R = r.uniform(0.05, 0.22) * u; rotd = lt * r.uniform(-8, 8)
+            if kind == "disc": d.ellipse((x - R, y - R, x + R, y + R), fill=col[:3] + (70,))
+            elif kind == "ring": d.ellipse((x - R, y - R, x + R, y + R), outline=col[:3] + (110,), width=max(3, int(u * 0.008)))
+            elif kind == "dots":
+                for gx in range(5):
+                    for gy in range(5):
+                        dr = u * 0.006; d.ellipse((x + gx * u * 0.03 - dr, y + gy * u * 0.03 - dr, x + gx * u * 0.03 + dr, y + gy * u * 0.03 + dr), fill=col[:3] + (120,))
+            else:
+                L = R * 2; ca, sa = math.cos(math.radians(rotd + i * 40)), math.sin(math.radians(rotd + i * 40))
+                d.line((x - ca * L, y - sa * L, x + ca * L, y + sa * L), fill=col[:3] + (110,), width=max(4, int(u * 0.01)))
+        layer.putalpha(layer.getchannel("A").point(lambda v: int(v * a)))
+        canvas.alpha_composite(layer)
+
+@register
+class CameraDrift(FX):
+    name = "camera-drift"; help = "Slow camera push in (or out) with a gentle sway - put one on every scene so nothing is ever static"
+    params = {"zoom": 1.07, "direction": "in", "sway": 0.006}
+    def post(self, c, img, lt):
+        q = ease_in_out(lt / self.dur); z0, z1 = (1.0, float(self.p["zoom"])) if self.p["direction"] == "in" else (float(self.p["zoom"]), 1.0)
+        z = lerp(z0, z1, q); s = float(self.p["sway"]) * c.W
+        return affine(img, z, c.W / 2, c.H / 2, c.W, c.H, math.sin(lt * 0.9) * s, math.cos(lt * 0.7) * s * 0.6, border=cv2.BORDER_REFLECT)
+
+@register
+class SearchBar(FX):
+    name = "search-bar"; help = "Generic search engine mock-up: a query types itself, results drop in, the Sponsored one is yours (no real logos)"
+    params = {"query": "digital marketing agency near me", "title": "Your Business - Get more customers", "url": "yourbusiness.com", "y": 0.55}
+    def front(self, c, canvas, lt):
+        W, H = c.W, c.H; u = U(c); w = u * 0.88; q = ease_out_cubic(lt / 0.35)
+        card_h = u * 0.62; panel = card(w, card_h, u * 0.04, (255, 255, 255, 250)); d = ImageDraw.Draw(panel)
+        bx, by, bw, bh = u * 0.04, u * 0.04, w - u * 0.08, u * 0.1
+        d.rounded_rectangle((bx, by, bx + bw, by + bh), radius=bh / 2, outline=(200, 200, 205, 255), width=max(2, int(u * 0.004)), fill=(248, 248, 250, 255))
+        rr = bh * 0.22; cx, cy = bx + bh * 0.5, by + bh * 0.45
+        d.ellipse((cx - rr, cy - rr, cx + rr, cy + rr), outline=(90, 90, 95, 255), width=max(2, int(u * 0.005)))
+        d.line((cx + rr * 0.7, cy + rr * 0.7, cx + rr * 1.5, cy + rr * 1.5), fill=(90, 90, 95, 255), width=max(2, int(u * 0.005)))
+        txt = str(self.p["query"]); n = int(len(txt) * clamp((lt - 0.35) / max(0.4, len(txt) * 0.05)))
+        cur = "|" if (lt * 2) % 1 < 0.5 and n < len(txt) else ""
+        paste(panel, T(txt[:n] + cur, "regular", u * 0.038, "#202124"), bx + bh, by + bh * 0.24)
+        t0 = 0.45 + len(txt) * 0.05
+        rows = [("Sponsored", self.p["title"], self.p["url"], True), ("", "Another result", "example.com", False), ("", "Another result", "example.org", False)]
+        y = by + bh + u * 0.04
+        for i, (tag, title, url, mine) in enumerate(rows):
+            rq = ease_out_cubic((lt - t0 - i * 0.15) / 0.3)
+            if rq <= 0: break
+            row = Image.new("RGBA", (int(bw), int(u * 0.13)), (0, 0, 0, 0)); rd = ImageDraw.Draw(row)
+            if mine: rd.rounded_rectangle((0, 0, bw, u * 0.13), radius=u * 0.015, fill=rgba(YELLOW, 90))
+            yy = u * 0.012
+            if tag:
+                tg = T(tag, "bold", u * 0.024, "#202124"); paste(row, tg, u * 0.02, yy); yy += tg.height + u * 0.008
+            paste(row, T(title, "semibold", u * 0.034, "#1A0DAB" if not mine else "#111111"), u * 0.02, yy)
+            paste(row, T(url, "regular", u * 0.024, "#3C7A3C"), u * 0.02, yy + u * 0.05)
+            paste(panel, row, bx, y + (1 - rq) * u * 0.05, rq); y += u * 0.15
+        panel = shadowed(panel, int(u * 0.025), (0, 10), 90); k, yc = fit_box(c, H * float(self.p["y"]), panel.height)
+        paste(canvas, scale_img(panel, k), W / 2, lerp(H * 1.2, yc, q), self.outa(lt), center=True)
+
+@register
+class PhoneFeed(FX):
+    name = "phone-feed"; help = "A phone with a short-video feed scrolling; one clip is an ad with a label and a button (no real app logos)"
+    params = {"captions": ["Your product", "Your offer", "Your story"], "label": "Sponsored", "button": "Shop now", "y": 0.56, "ai_label": False, "images": None}
+    def front(self, c, canvas, lt):
+        W, H = c.W, c.H; u = U(c); ph = min(H * 0.6, u * 1.05); pw = ph * 0.5; q = ease_out_back(lt / 0.45)
+        phone = card(pw, ph, pw * 0.12, (17, 17, 17, 255)); sc_w, sc_h = pw * 0.92, ph * 0.95
+        screen = Image.new("RGBA", (int(sc_w), int(sc_h)), (0, 0, 0, 255))
+        caps = as_list(self.p["captions"]); n = len(caps); per = self.dur / max(1, n)
+        k = min(n - 1, int(lt / per)); f = clamp((lt - k * per - per * 0.75) / (per * 0.25))
+        st = self.__dict__.setdefault("_st", {})
+        if "clips" not in st:
+            if self.p.get("images"):
+                st["clips"] = load_images(self.p["images"], n + 1, sc_w, sc_h)
+            else:
+                cl = []
+                for j in range(n + 1):
+                    im = fx.placeholder(j, sc_w, sc_h, label=" ")
+                    if j < n:
+                        lab = caps[j].upper(); ls = fit_size(lab, "display", sc_w * 0.8, sc_w * 0.16)
+                        paste(im, T(lab, "display", ls, "#FFFFFF", stroke=max(2, int(ls * 0.05)), stroke_fill=(0, 0, 0, 160)), sc_w / 2, sc_h * 0.42, center=True)
+                    cl.append(im)
+                st["clips"] = cl
+        clips = st["clips"]
+        for j, off in ((k, -ease_in_out(f)), (k + 1, 1 - ease_in_out(f))):
+            if j >= n: continue
+            im = clips[j].copy(); d = ImageDraw.Draw(im)
+            d.rectangle((0, sc_h * 0.72, sc_w, sc_h), fill=(0, 0, 0, 120))
+            if self.p.get("label"):
+                lb = T(self.p["label"], "bold", u * 0.026, "#FFFFFF"); paste(im, lb, sc_w * 0.06, sc_h * 0.75)
+            if self.p.get("ai_label"):
+                ai = card(u * 0.14, u * 0.05, u * 0.012, rgba(YELLOW)); paste(ai, T("AI-made", "bold", u * 0.022, INK), u * 0.07, u * 0.025, center=True)
+                paste(im, ai, sc_w * 0.06, sc_h * 0.05)
+            if self.p.get("button"):
+                bt = card(sc_w * 0.88, u * 0.07, u * 0.015, rgba(YELLOW)); paste(bt, T(self.p["button"], "bold", u * 0.03, INK), bt.width / 2, bt.height / 2, center=True)
+                paste(im, bt, sc_w * 0.06, sc_h * 0.84)
+            for hy, sym in ((0.45, "♥"), (0.55, "✎"), (0.65, "➦")):
+                paste(im, T(sym, "sym", u * 0.04, "#FFFFFF"), sc_w * 0.88, sc_h * hy, center=True)
+            screen.alpha_composite(im, (0, int(off * sc_h)))
+        paste(phone, rounded(screen, pw * 0.1), (pw - sc_w) / 2, (ph - sc_h) / 2)
+        k, yc = fit_box(c, H * float(self.p["y"]), ph * 1.05)
+        paste(canvas, rot(shadowed(scale_img(phone, max(0.05, q) * k), int(u * 0.03), (0, 14), 120), -3), W / 2, yc, self.outa(lt), center=True)
+
+@register
+class ChatFlow(FX):
+    name = "chat-flow"; help = "Chat bubbles: a customer asks, an automatic reply answers (AUTO tag) - for AI automation / chatbots"
+    params = {"messages": [["in", "Hi, price kati ho?"], ["out", "Namaste! Price list pathaudai chhu."], ["out", "Order garna yo link: ..."]], "y": 0.56}
+    def front(self, c, canvas, lt):
+        W, H = c.W, c.H; u = U(c); msgs = self.p["messages"]; n = len(msgs); bw_max = u * 0.62
+        ims = []
+        for side, text in msgs:
+            kind = "deva" if has_deva(text) else "semibold"; lines = wrap(text, kind, u * 0.036, bw_max - u * 0.06)
+            tl = [T(l, kind, u * 0.036, "#FFFFFF" if side == "out" else INK) for l in lines]
+            bw = max(t.width for t in tl) + u * 0.06; bh = sum(t.height for t in tl) + u * 0.035 + (len(tl) - 1) * u * 0.012
+            b = card(bw, bh, u * 0.03, rgba(INK) if side == "out" else (255, 255, 255, 250)); yy = u * 0.0175
+            for t in tl: paste(b, t, u * 0.03, yy); yy += t.height + u * 0.012
+            if side == "out":
+                tag = card(u * 0.1, u * 0.04, u * 0.01, rgba(YELLOW)); paste(tag, T("AUTO", "bold", u * 0.02, INK), u * 0.05, u * 0.02, center=True)
+                full = Image.new("RGBA", (int(bw), int(bh + u * 0.05)), (0, 0, 0, 0)); paste(full, b, 0, 0); paste(full, tag, bw - tag.width, bh + u * 0.01); b = full
+            ims.append((side, shadowed(b, int(u * 0.012), (0, 4), 70)))
+        total = sum(im.height for _, im in ims) + u * 0.02 * (n - 1); k, yc = fit_box(c, H * float(self.p["y"]), total)
+        if k < 1: ims = [(sd, scale_img(im, k)) for sd, im in ims]; total *= k
+        y = yc - total / 2
+        for i, (side, im) in enumerate(ims):
+            q = ease_out_back((lt - 0.2 - i * min(0.9, self.dur * 0.6 / n)) / 0.35)
+            if q > 0:
+                x = W / 2 - u * 0.4 + im.width / 2 if side == "in" else W / 2 + u * 0.4 - im.width / 2
+                paste(canvas, scale_img(im, max(0.05, q)), x, y + im.height / 2, self.outa(lt), center=True)
+            y += im.height + u * 0.02 * k
+
+# ================================================================= auto captions for real footage (faster-whisper, if installed)
+def transcribe(path, language=None, model="small"):
+    """[[word, start, end], ...] from the video's own audio. Needs `pip install faster-whisper` (downloads the model once)."""
+    from faster_whisper import WhisperModel
+    m = WhisperModel(model, device="cpu", compute_type="int8")
+    segs, _ = m.transcribe(path, word_timestamps=True, language=language or None, vad_filter=True)
+    return [[w.word.strip(), round(w.start, 3), round(w.end, 3)] for s in segs for w in (s.words or []) if w.word.strip()]
+
+_orig_build = fx.build
+def _build(plan):
+    src = next((a for a in sys.argv[1:] if not a.startswith("-") and os.path.exists(a)), None)
+    for d in plan:
+        if d.get("fx") in ("voice-captions", "captions") and d.get("auto") and not d.get("words"):
+            try:
+                d["words"] = transcribe(src, d.get("language"), d.get("model", "small"))
+                print(f"auto captions: {len(d['words'])} words", file=sys.stderr)
+            except Exception as e:
+                print(f"WARNING: auto captions skipped ({e}). pip install faster-whisper, or give 'words'.", file=sys.stderr)
+                d["words"] = []
+            d["fx"] = "voice-captions"; d.pop("auto", None); d.pop("language", None); d.pop("model", None)
+    return _orig_build(plan)
+fx.build = _build
+VoiceCaptions.params = dict(VoiceCaptions.params, auto=False, language=None, model="small")
 
 if __name__ == "__main__":
     fx.main()
