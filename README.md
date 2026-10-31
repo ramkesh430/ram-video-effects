@@ -23,7 +23,7 @@ document reveals, redactions, hand-drawn arrows, source tags, archive film and b
 
 - **In Claude:** "Vox style intro with the headline 'Why rent is so high'", "map-pin on Pokhara at 8 seconds".
 - **On GitHub:** use them in your plan like any other effect (start from [vox/example_plan.json](vox/example_plan.json)). The Render effects action picks up `vox/vox.py` automatically.
-- **Install:** `bash vox/install.sh` (Windows: `vox\install.ps1`), or upload [vox/ram-vox-effects.zip](vox/ram-vox-effects.zip) in the Claude app.
+- **Install:** included in the main install and in the one [ram-video-effects.zip](ram-video-effects.zip) - nothing extra to install.
 - All options: [vox/EFFECTS.md](vox/EFFECTS.md) · details: [vox/README.md](vox/README.md)
 
 ## Voiced videos from a script or a prompt
@@ -93,9 +93,10 @@ git clone https://github.com/ramkesh430/ram-video-effects && bash ram-video-effe
 git clone https://github.com/ramkesh430/ram-video-effects; powershell -ExecutionPolicy Bypass -File ram-video-effects\install.ps1
 ```
 
-The installer sets up Python packages, ffmpeg, the two AI models (person cut-out + face finder), optional fonts, and copies the skill to `~/.claude/skills/ram-video-effects`. Then restart Claude Code.
+The installer sets up Python packages (plus edge-tts for AI voices), ffmpeg, the two AI models (person cut-out + face finder), optional fonts, and copies the one skill (62 + 22 Vox effects + voiced videos) to `~/.claude/skills/ram-video-effects`. Then restart Claude Code.
 
 **Claude app (web / desktop):** download [ram-video-effects.zip](ram-video-effects.zip) and upload it in **Settings → Capabilities → Skills**.
+This one zip has everything: the 62 effects, the 22 Vox effects, the voiced-video maker (`make_video.py`), the prompt-to-script tool and the example scripts.
 
 ## Use it
 
@@ -145,16 +146,15 @@ noise · lineup · locked-on · orbit · lean-in · backdrop-word · spotlight �
 | `SKILL.md` | Claude skill instructions |
 | `install.sh` / `install.ps1` | installers |
 | `requirements.txt` | Python packages |
-| `EFFECTS.md` | every effect and its options |
+| `EFFECTS.md` | every effect and its options (62 + 22 Vox) |
 | `example_plan.json` | the plan behind the example video |
-| `ram-video-effects.zip` | skill for upload in the Claude app |
+| `ram-video-effects.zip` | the whole skill in one zip for the Claude app (all 84 effects + voiced videos + example scripts) |
 | `render_inputs.py` | renders everything in `inputs/` (used by the GitHub Action) |
 | `.github/workflows/render.yml` | the "Render effects" GitHub Action |
 | `vox/vox.py` | 22 Vox-style effects (loads `fx.py`, so all 84 effects work) |
 | `vox/make_video.py` | script → voice-over + background + effects → finished video (9:16 or 16:9) |
 | `vox/prompt_to_script.py` | prompt → script, written by Claude (needs `ANTHROPIC_API_KEY`) |
 | `vox/scripts/` | example scripts (promo, explainer, documentary) |
-| `vox/ram-vox-effects.zip` | the Vox skill for upload in the Claude app |
 | `.github/workflows/vox-video.yml` · `prompt-video.yml` | the "Make Vox video" and "Prompt to video" GitHub Actions |
 | `ram_video_effects.ipynb` | Google Colab notebook |
 | `inputs/` · `outputs/` | drop videos here · rendered results appear here |

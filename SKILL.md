@@ -1,15 +1,21 @@
 ---
 name: ram-video-effects
-description: Add talking-head video effects (62 effects - word behind head, orbit, spotlight, receipts, glass widgets, tier list, captions, confetti and more) to a video. Use when the user says /effects or asks to add an effect to their video.
+description: All-in-one video kit - 62 talking-head effects (word behind head, orbit, spotlight, glass widgets, tier list, captions, confetti...), 22 Vox-style explainer effects (paper cut-out, newspaper highlights, maps, charts, timelines, quote cards, archive film...) and finished voiced videos from a prompt (AI voice-over in Nepali/English/Hindi, 9:16 or 16:9). Use when the user says /effects, asks to add an effect to a video or photo, asks for Vox style / explainer / documentary editing, or asks to make a video from a topic or prompt.
 ---
 
-# Ram's Video Effects (fxkit)
+# Ram's Video Effects (fxkit + Vox + voiced videos)
 
 The user gives a video (vertical talking-head works best) and asks for effects in plain words, e.g.
 "orbit from 3 to 6 seconds", "spotlight when I say 'lights off'", "backdrop-word RAM for the first 2s".
 Reply in the user's language (often Nepali in Roman script).
 
-The engine is `fx.py` in this skill's folder. It accepts a video OR a photo (a photo becomes a slow-zoom vertical clip automatically). Run `python fx.py --list` to see every effect with its params.
+Everything is in this one skill folder:
+- `fx.py` - the engine with the 62 effects. Accepts a video OR a photo (a photo becomes a slow-zoom vertical clip).
+- `vox.py` - loads `fx.py` and adds 22 Vox effects; same plan format, so a plan can mix all 84 effects. Use `vox.py` whenever a plan has a Vox effect.
+- `make_video.py` - script JSON -> AI voice-over + paper background + effects -> finished video (no footage needed).
+- `prompt_to_script.py` - plain prompt -> script JSON, written by Claude through the API (only for the automatic GitHub action).
+- `scripts/` - example scripts (promo, explainer, documentary). `EFFECTS.md` - every effect and its options.
+Run `python vox.py --list` to see every effect with its params.
 
 ## Effects
 - noise: Reels/screenshots pile up behind your head
@@ -94,9 +100,69 @@ Charts, counters and headlines should use the user's real numbers and words - as
 5. **Render:** `python ~/.cache/fxkit/fx.py VIDEO.mp4 VIDEO_effects.mp4 --plan plan.json` (`--max-short 2160` for 4K). Original audio is kept.
 6. Tell the user what was added and when; offer tweaks ("too fast", "covers my face" -> adjust and re-render).
 
-## More: Vox-style explainers and voiced videos
-For "Vox style", explainer/documentary looks, or a finished video with an AI voice-over from a prompt, use the pack in
-`vox/` of github.com/ramkesh430/ram-video-effects (skill `ram-vox-effects`): 22 Vox effects + `make_video.py`
-(script -> voice + paper background + effects, 9:16 or 16:9). All 62 effects here also work inside Vox plans.
+
+## Vox effects
+LOOK
+- paper-room: background becomes textured paper, the person becomes a cut-out with a white sticker border
+- paper-grain: warm printed-paper texture + grain + vignette over the whole frame
+- archive-film: old footage look - sepia/bw, grain, flicker, scratches, dust, gate weave (`look`: sepia|bw)
+- parallax: 2.5D Ken Burns - the person pushes in faster than the background (great on photos)
+- block-wipe: yellow + black blocks sweep across - transition, ~0.6 s centred on a cut
+TEXT
+- torn-headline: torn paper strip with a yellow kicker label and bold headline (`kicker`, `text`, `y`)
+- highlight-clip: newspaper clipping slides in, the [phrase] gets a yellow marker (`source`, `headline`, `body`, `date`)
+- marker-text: key line on paper strips, [words] get a highlighter swipe, `|` = new line
+- context-label: typewriter place/date lower-third (`text`, `sub`)
+- quote-card: full-screen paper quote, word by word, [words] highlighted, then `by`
+DATA
+- vox-bars: horizontal bar chart (`title`, `labels`, `values`, `suffix`, `highlight`, `source`)
+- vox-line: line chart that draws itself (`title`, `values`, `labels` first|last, `prefix`, `suffix`)
+- big-number: huge number counts up (`value`, `prefix`, `suffix`, `label`)
+- vox-timeline: marker steps through years with event labels (`years`, `events`, `active` to pin one)
+CUTAWAYS (full screen)
+- map-pin: map zooms to a pin + place label (`place`, `sub`, `x`, `y` 0-1 pin position, `image` = real map screenshot)
+- doc-reveal: document with camera push and red circle (`image` = screenshot, `circle` [x,y,w,h] 0-1 of the page, `note`)
+- photo-drop: taped sepia archive photos drop behind the person (`images` folder, `captions`)
+- redact: document with black redaction bars + stamp (`lines` = which text lines, `stamp`, `image`)
+- compare-split: full-screen A vs B, numbers count up (`left`, `right`, `left_value`, `right_value`, `prefix`, `note`)
+POINTERS
+- arrow-callout: hand-drawn arrow draws to a point (`x`,`y` target 0-1, `from_x`,`from_y` label position, `text`)
+- icon-array: grid of people icons, `highlight` of `total` turn yellow (`label`) - "1 in 4 ..."
+- source-tag: small "Source: ..." chip in the corner - put one on every fact/chart
+
+`[brackets]` = highlighted words in highlight-clip, marker-text and quote-card.
+Use the user's REAL facts, numbers, sources and quotes - ask if missing; never invent statistics or quotes.
+The built-in map is a stylised placeholder, not a real map: for a real place ask for a map screenshot (`image`) and set `x`,`y` to the pin.
+
+## A good Vox sequence (adapt to the video)
+1. Intro 0-4 s: `paper-room` + `torn-headline` + `context-label`
+2. `block-wipe` on each section change
+3. Facts: `big-number` / `vox-bars` / `vox-line` / `icon-array` / `compare-split` + `source-tag`
+4. Places: `map-pin`; history: `archive-film` + `photo-drop` or `vox-timeline`
+5. Evidence: `highlight-clip`, `doc-reveal` or `redact`; voices: `quote-card`; point at things with `arrow-callout`
+6. Ending: `marker-text` with the main point; add `captions` from fx if wanted
+Keep each card 2.5-4 s; leave gaps where the face is clean.
+
+## Vox steps
+1. **Setup:** same as above (packages, models, fonts), plus `vox.py`, `make_video.py` next to `fx.py` in `~/.cache/fxkit/`.
+   Without the cut-out model, paper-room covers the whole frame and photo-drop sits in front - get the model.
+2. **Timing by words.** For "when I say X": `faster-whisper` with `word_timestamps=True`, use that word's start.
+3. **Plan** `plan.json`: `[{"fx":"paper-room","start":0,"end":4}, {"fx":"map-pin","start":8,"end":11,"place":"POKHARA"}]`. Effects stack.
+4. **Preview:** `python ~/.cache/fxkit/vox.py VIDEO.mp4 /tmp/prev.png --plan plan.json --preview t1,t2 --debug` and look at the PNGs.
+   Fix anything covering the face (cards have a `y` param, 0-1 of the height).
+5. **Render:** `python ~/.cache/fxkit/vox.py VIDEO.mp4 VIDEO_vox.mp4 --plan plan.json` (`--max-short 2160` for 4K). Audio kept.
+6. Tell the user what was added and when; offer tweaks.
+
+## Prompt -> finished video (voice + effects)
+When the user just describes a video ("60 sec Nepali promo for my agency", "5 min documentary on X"), build it end to end:
+1. Write a script JSON like `scripts/ram_digital_promo.json` in this skill folder: `voice` (ne-NP-SagarNeural / ne-NP-HemkalaNeural / en-US-GuyNeural ...),
+   `size` ([1080,1920] reel or [1920,1080] YouTube), `scenes` with `say` (voice text in the user's language, numbers in words)
+   and `fx` (Vox effects with `at`/`end` in seconds from the scene start; negative = before the scene ends). On-screen text in short English.
+   Use only real facts; add a `source-tag` to every number. No invented stats, clients, testimonials or quotes.
+2. Preview: `python ~/.cache/fxkit/make_video.py SCRIPT.json --out /tmp/vid/NAME.mp4 --silent --preview` (add `--size 1920x1080` for landscape) and look at the PNGs.
+3. Render: `python ~/.cache/fxkit/make_video.py SCRIPT.json --out NAME.mp4` (always pass `--out`) (needs `pip install edge-tts` + internet for the voice). `--size` and `--name` make other formats.
+   Without internet for the voice, push the script to github.com/ramkesh430/ram-video-effects (vox/scripts/) and run the GitHub action "Make Vox video" (format: both = 9:16 + 16:9).
+4. Fully automatic on GitHub: action "Prompt to video" takes a plain prompt, Claude writes the script (secret ANTHROPIC_API_KEY), then renders.
+
 
 Notes: draft quality, the user approves before posting. No music or sound effects are added.

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Ram's Video Effects - one-line installer (macOS / Linux)
-#   bash install.sh                  # Ram's 62 effects
+#   bash install.sh                  # 62 effects + 22 Vox effects + voiced videos (one skill)
 #   bash install.sh --with-original  # + Vibha Ramprakash's original claude-video-effects skill
 set -u
 WITH_ORIGINAL=0
@@ -14,6 +14,7 @@ mkdir -p "$CACHE/fonts" "$SKILL"
 echo "==> Python packages"
 $PY -m pip install -q -r "$HERE/requirements.txt" 2>/dev/null || \
 $PY -m pip install -q --break-system-packages -r "$HERE/requirements.txt"
+$PY -m pip install -q edge-tts 2>/dev/null || $PY -m pip install -q --break-system-packages edge-tts   # AI voice for make_video.py
 
 echo "==> ffmpeg"
 if ! command -v ffmpeg >/dev/null 2>&1; then
@@ -54,8 +55,10 @@ done
 find "$CACHE/fonts" -size -1k -delete 2>/dev/null
 
 echo "==> Engine + Claude skill"
-cp "$HERE/fx.py" "$CACHE/fx.py"
-cp "$HERE/fx.py" "$HERE/SKILL.md" "$SKILL/"
+V="$HERE/vox"
+cp "$HERE/fx.py" "$V/vox.py" "$V/make_video.py" "$V/prompt_to_script.py" "$CACHE/"
+cp "$HERE/fx.py" "$V/vox.py" "$V/make_video.py" "$V/prompt_to_script.py" "$HERE/SKILL.md" "$HERE/EFFECTS.md" "$SKILL/"
+mkdir -p "$SKILL/scripts" && cp "$V"/scripts/*.json "$SKILL/scripts/"
 
 if [ "$WITH_ORIGINAL" = 1 ]; then
   echo "==> Original skill (github.com/Vibha-Ramprakash/claude-video-effects)"
@@ -65,6 +68,6 @@ if [ "$WITH_ORIGINAL" = 1 ]; then
 fi
 
 echo "==> Self-test"
-echo "   OK: $($PY "$CACHE/fx.py" --list | grep -vc params) effects ready"
+echo "   OK: $($PY "$CACHE/vox.py" --list | grep -vc params) effects ready"
 ls "$CACHE"/*.tflite 2>/dev/null | sed 's/^/   model: /'
 echo "Done. Restart Claude Code, drop in a video and ask for an effect (e.g. 'orbit from 3 to 6 seconds')."

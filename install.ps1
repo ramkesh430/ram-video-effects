@@ -10,6 +10,7 @@ New-Item -ItemType Directory -Force -Path (Join-Path $Cache "fonts"), $Skill | O
 
 Write-Host "==> Python packages"
 python -m pip install -q -r (Join-Path $Here "requirements.txt")
+python -m pip install -q edge-tts   # AI voice for make_video.py
 
 Write-Host "==> ffmpeg"
 if (-not (Get-Command ffmpeg -ErrorAction SilentlyContinue)) {
@@ -37,8 +38,12 @@ foreach ($f in @("ofl/anton/Anton-Regular.ttf","ofl/archivoblack/ArchivoBlack-Re
 }
 
 Write-Host "==> Engine + Claude skill"
-Copy-Item (Join-Path $Here "fx.py") (Join-Path $Cache "fx.py") -Force
-Copy-Item (Join-Path $Here "fx.py"), (Join-Path $Here "SKILL.md") $Skill -Force
+$V = Join-Path $Here "vox"
+$Eng = @((Join-Path $Here "fx.py"), (Join-Path $V "vox.py"), (Join-Path $V "make_video.py"), (Join-Path $V "prompt_to_script.py"))
+Copy-Item $Eng $Cache -Force
+Copy-Item ($Eng + @((Join-Path $Here "SKILL.md"), (Join-Path $Here "EFFECTS.md"))) $Skill -Force
+New-Item -ItemType Directory -Force -Path (Join-Path $Skill "scripts") | Out-Null
+Copy-Item (Join-Path $V "scripts\*.json") (Join-Path $Skill "scripts") -Force
 
 if ($WithOriginal) {
   Write-Host "==> Original skill (github.com/Vibha-Ramprakash/claude-video-effects)"
@@ -46,5 +51,5 @@ if ($WithOriginal) {
   if (Test-Path (Join-Path $Orig ".git")) { git -C $Orig pull -q } else { git clone -q https://github.com/Vibha-Ramprakash/claude-video-effects $Orig }
 }
 
-python (Join-Path $Cache "fx.py") --list | Select-Object -First 1 | Out-Null
+python (Join-Path $Cache "vox.py") --list | Select-Object -First 1 | Out-Null
 Write-Host "Done. Restart Claude Code, drop in a video and ask for an effect."
