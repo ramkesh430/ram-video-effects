@@ -45,8 +45,8 @@ jobs:
 
       - name: Install ffmpeg + Python packages
         run: |
-          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core libgl1 libegl1 libgles2 libglib2.0-0 xvfb
-          pip install -q -r requirements.txt
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg fonts-dejavu-core fonts-noto-core fonts-freefont-ttf libgl1 libegl1 libgles2 libglib2.0-0 xvfb
+          pip install -q -r requirements.txt faster-whisper   # faster-whisper: auto subtitles
 
       - name: Cache models and fonts
         uses: actions/cache@v4
